@@ -63,6 +63,8 @@ public class World : MonoBehaviour
 
         KBEngine.Event.registerOut("updatePos", this, "updatePos");
         KBEngine.Event.registerOut("updateDir", this, "updateDir");
+
+        KBEngine.Event.registerOut("onFrameTick", this, "onFrameTick");
     }
 
     void OnDestroy()
@@ -225,6 +227,11 @@ public class World : MonoBehaviour
 //         gameEntity.isOnGround = entity.isOnGround;
 // 
 //         Debug.Log("world::updatePosition." + entity.id + ",position:" + entity.position + ",direction:" + entity.direction);
+    }
+
+    public void  onFrameTick()
+    {
+        CBGlobalEventDispatcher.Instance.TriggerEvent((int)EVENT_ID.EVENT_FRAME_TICK);
     }
 
     public void updatePos(KBEngine.Entity entity, UInt64 frameid, Vector3 position)

@@ -37,6 +37,8 @@ public class GameEntity : MonoBehaviour
 
     public bool entityEnabled = true;
 
+    public bool canRead = false;
+
     public UInt64 frameId = 0;
 
     private static GameObject directionObj = null;
@@ -44,6 +46,11 @@ public class GameEntity : MonoBehaviour
     private CharacterController m_CharacterController;
 
     public static float DeltaTimeSample = 0.02f;
+    public static float playTime = 1/30.0f; // 33 s
+
+    private float frameDuration = 0f;
+
+    public List<Vector3> frame_pool = new List<Vector3>();
 
     Animator anim;                      // Reference to the animator component.
 
@@ -84,8 +91,10 @@ public class GameEntity : MonoBehaviour
         {
             _moveDirection = value;
 
- //           System.TimeSpan time = System.DateTime.Now - GetComponent<PlayerMovement>().startTime;
- //           Debug.Log("TTL time:" + time);
+            frame_pool.Add(_moveDirection);
+
+            //           System.TimeSpan time = System.DateTime.Now - GetComponent<PlayerMovement>().startTime;
+            //           Debug.Log("TTL time:" + time);
             //m_CharacterController.Move(speed * moveDirection * DeltaTimeSample);
             //transform.position += speed * moveDirection * DeltaTimeSample;
 
@@ -170,13 +179,26 @@ public class GameEntity : MonoBehaviour
         }
     }
 
+    public float FrameDuration
+    {
+        get
+        {
+            return frameDuration;
+        }
+
+        set
+        {
+            frameDuration  = value;             
+        }
+    }
+
     void Awake()
     {
     }
 
     void Start()
     {
- //       CBGlobalEventDispatcher.Instance.AddEventListener<Transform>((int)EVENT_ID.EVENT_FRAME_UPDATE, AttachTarget);
+        CBGlobalEventDispatcher.Instance.AddEventListener((int)EVENT_ID.EVENT_FRAME_TICK, onUpdate);
 
         m_CharacterController = GetComponent<CharacterController>();
 
@@ -254,20 +276,73 @@ public class GameEntity : MonoBehaviour
 
     public void onUpdate()
     {
+//         if(frame_pool.Count > 0)
+//         {
+//             Vector3 movement = frame_pool[0];
+//             destPosition += speed * movement * DeltaTimeSample;
+//             frame_pool.Remove(movement);
+//         }
 
+        destPosition += speed * moveDirection * DeltaTimeSample;
     }
+
     private void FixedUpdate()
     {
-        destPosition += speed * moveDirection * DeltaTimeSample;
-
-        anim.SetBool("IsWalking", moveDirection != Vector3.zero);
+//        destPosition += speed * moveDirection * DeltaTimeSample;
     }
+
+    bool TimeReady()
+    {
+        return false;
+    }
+
+    bool FrameReady()
+    {
+        return canRead;
+    }
+    bool CanPlay()
+    {
+        return TimeReady() && FrameReady();
+    }
+
+    void VideoPlay()
+    {
+
+    }
+
     private void Update()
     {
         if (!isAvatar)
             return;
 
+        position = Vector3.Lerp(position, destPosition, speed * Time.deltaTime);
 
+        FrameDuration += Time.deltaTime;
+
+        if (FrameDuration >= playTime)
+        {
+            if (canRead)
+            {
+                if (frame_pool.Count > 0)
+                {
+                    Vector3 movement = frame_pool[0];
+
+                    destPosition += speed * movement * playTime;
+
+                    frame_pool.Remove(movement);
+
+                    FrameDuration = 0.0f;
+                }
+                else
+                {
+                    canRead = false;
+                }
+            }
+            else if (frame_pool.Count >= 4)
+            {
+                canRead = true;
+            }
+        }
 
         //         if (!entityEnabled)
         //         {
@@ -318,7 +393,7 @@ public class GameEntity : MonoBehaviour
         //             position = destPosition;
         //         }
 
-        position = Vector3.Lerp(position, destPosition, speed * 10f * Time.deltaTime);
+
     }
 }
 
