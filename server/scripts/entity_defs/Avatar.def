@@ -50,36 +50,34 @@
 	</Properties>
 
 	<ClientMethods>
-        <updatePosition>
-        <Arg>           FRAMEID               </Arg>
-        <Arg>           POSITION3D                </Arg>
-    	</updatePosition>
 
-    	<updateDirection>
-        <Arg>           FRAMEID               </Arg>
-        <Arg>           DIRECTION3D                </Arg>
-    	</updateDirection>
+        <onEnterRoom>
+        <Arg>           ENTITY_ID               </Arg>
+        </onEnterRoom>
+
+        <onLeaveRoom>
+        <Arg>           ENTITY_ID               </Arg>
+        </onLeaveRoom>
+
+        <onRspFrameMessage>
+        <Arg>           FRAME_DATA               </Arg>
+        </onRspFrameMessage>
+
 	</ClientMethods>
 
 	<BaseMethods>
 		<createCell>
 			<Arg>		ENTITYCALL					</Arg>
-			<Arg>		SPACE_KEY					</Arg>
 		</createCell>
 	</BaseMethods>
 
 	<CellMethods>
-		<reqPosition>
+		<reqFrameChange>
             <Exposed/>
-            <Arg>       FRAMEID        </Arg>
-            <Arg>       POSITION3D      </Arg>
-        </reqPosition>
+            <Arg>       ENTITY_DATA      </Arg>
+        </reqFrameChange>
 
-       	<reqDirection>
-            <Exposed/>
-            <Arg>       FRAMEID        </Arg>
-            <Arg>       DIRECTION3D      </Arg>
-        </reqDirection>
+
 	</CellMethods>
 
 </root>

@@ -91,20 +91,18 @@ class Avatar(KBEngine.Entity, EntityCommon):
 
 		DEBUG_MSG("Avatar::relive: %i, type=%i." % (self.id, type))
 
-	def reqPosition(self,exposed ,frameid,position):
+	def reqFrameChange(self,exposed,framedata):
 		"""
-		更新坐标
-		"""
-		if exposed != self.id:
-			return
-
-		self.allClients.updatePosition(frameid,position)
-
-	def reqDirection(self,exposed ,frameid,direction):
-		"""
-		更新方向
+		上传操作帧
 		"""
 		if exposed != self.id:
 			return
 
-		self.allClients.updateDirection(frameid,direction)
+		self.getCurrRoom().addFrame(self,framedata)
+
+
+
+#		self.allClients.updatePosition(self.getCurrRoom().frameId,position)
+
+
+

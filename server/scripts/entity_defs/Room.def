@@ -10,6 +10,18 @@
 			<Type>			SPACE_KEY			</Type>
 			<Flags>			CELL_PUBLIC			</Flags>
 		</roomKeyC>
+
+		<currFrame>
+			<Type>			FRAME_DATA			</Type>
+			<Flags>			CELL_PUBLIC			</Flags>
+		</currFrame>
+
+		<framePool>
+			<Type>			FRAME_LIST			</Type>
+			<Flags>			CELL_PUBLIC			</Flags>
+		</framePool>
+
+
 	</Properties>
 
 	<ClientMethods>

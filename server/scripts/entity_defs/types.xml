@@ -9,4 +9,43 @@
 	<DIRECTION3D>		VECTOR3		</DIRECTION3D>
 	<SPACE_KEY>				UINT64		</SPACE_KEY>
     <FRAMEID>             UINT64      </FRAMEID>
+
+
+	<ENTITY_DATA>	FIXED_DICT
+		<implementedBy>ENTITY_DATA.inst</implementedBy>
+		<Properties>
+			<entityid>
+				<Type>	ENTITY_ID	</Type>
+			</entityid>
+			<position>
+				<Type>	POSITION3D	</Type>
+			</position>
+			<direction>
+				<Type>	DIRECTION3D	</Type>
+			</direction>
+		</Properties>
+	</ENTITY_DATA>
+
+
+	<FRAME_DATA>	FIXED_DICT
+		<implementedBy>FRAME_DATA.inst</implementedBy>
+		<Properties>
+			<frameid>
+				<Type>	FRAMEID	</Type>
+			</frameid>
+			<operation>
+				<Type>	ARRAY <of> ENTITY_DATA </of> </Type>
+			</operation>
+		</Properties>
+	</FRAME_DATA>
+
+	<FRAME_LIST>	FIXED_DICT
+		<implementedBy>FRAME_LIST.inst</implementedBy>
+		<Properties>
+			<values>
+				<Type>	ARRAY <of> FRAME_DATA </of>	</Type>
+			</values>
+		</Properties>
+	</FRAME_LIST>
+
 </root>

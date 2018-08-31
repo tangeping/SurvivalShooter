@@ -12,13 +12,13 @@ class Room(KBEngine.Entity):
 	"""
 	def __init__(self):
 		KBEngine.Entity.__init__(self)
-		
+
 		self.cellData["roomKeyC"] = self.roomKey
-		
+
 		# 请求在cellapp上创建cell空间
 		self.createCellEntityInNewSpace(None)
-		
-		self.avatars = {}
+
+
 
 	def enterRoom(self, entityCall, position, direction):
 		"""
@@ -34,7 +34,7 @@ class Room(KBEngine.Entity):
 		某个玩家请求退出这个space
 		"""
 		self.onLeave(entityID)
-		
+
 	def onTimer(self, tid, userArg):
 		"""
 		KBEngine method.
@@ -42,21 +42,22 @@ class Room(KBEngine.Entity):
 		"""
 		#DEBUG_MSG("%s::onTimer: %i, tid:%i, arg:%i" % (self.getScriptName(), self.id, tid, userArg))
 		pass
-		
+
 	def onEnter(self, entityCall):
 		"""
 		defined method.
 		进入场景
 		"""
-		self.avatars[entityCall.id] = entityCall
-		
+		if self.cell is not None:
+			self.cell.onEnter(entityCall)
+
 	def onLeave(self, entityID):
 		"""
 		defined method.
 		离开场景
 		"""
-		if entityID in self.avatars:
-			del self.avatars[entityID]
+		if self.cell is not None:
+			self.cell.onLeave(entityID)
 
 	def onLoseCell(self):
 		"""
@@ -64,7 +65,7 @@ class Room(KBEngine.Entity):
 		entity的cell部分实体丢失
 		"""
 		KBEngine.globalData["Halls"].onRoomLoseCell(self.roomKey)
-		
+
 		self.avatars = {}
 		self.destroy()
 
