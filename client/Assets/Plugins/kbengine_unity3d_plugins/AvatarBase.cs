@@ -32,8 +32,9 @@ namespace KBEngine
 		public SByte state = 0;
 		public virtual void onStateChanged(SByte oldValue) {}
 
-		public abstract void updateDirection(UInt64 arg1, Vector3 arg2); 
-		public abstract void updatePosition(UInt64 arg1, Vector3 arg2); 
+		public abstract void onEnterRoom(Int32 arg1); 
+		public abstract void onLeaveRoom(Int32 arg1); 
+		public abstract void onRspFrameMessage(FRAME_DATA arg1); 
 
 		public AvatarBase()
 		{
@@ -102,15 +103,17 @@ namespace KBEngine
 
 			switch(method.methodUtype)
 			{
-				case 5:
-					UInt64 updateDirection_arg1 = stream.readUint64();
-					Vector3 updateDirection_arg2 = stream.readVector3();
-					updateDirection(updateDirection_arg1, updateDirection_arg2);
+				case 3:
+					Int32 onEnterRoom_arg1 = stream.readInt32();
+					onEnterRoom(onEnterRoom_arg1);
 					break;
 				case 4:
-					UInt64 updatePosition_arg1 = stream.readUint64();
-					Vector3 updatePosition_arg2 = stream.readVector3();
-					updatePosition(updatePosition_arg1, updatePosition_arg2);
+					Int32 onLeaveRoom_arg1 = stream.readInt32();
+					onLeaveRoom(onLeaveRoom_arg1);
+					break;
+				case 5:
+					FRAME_DATA onRspFrameMessage_arg1 = ((DATATYPE_FRAME_DATA)method.args[0]).createFromStreamEx(stream);
+					onRspFrameMessage(onRspFrameMessage_arg1);
 					break;
 				default:
 					break;

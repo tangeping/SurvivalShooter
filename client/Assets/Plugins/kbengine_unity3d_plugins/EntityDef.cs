@@ -211,71 +211,66 @@ namespace KBEngine
 
 			//Dbg.DEBUG_MSG("EntityDef::initScriptModules: add(Avatar), property(state / 7).");
 
-			List<DATATYPE_BASE> pAvatar_updateDirection_args = new List<DATATYPE_BASE>();
-			pAvatar_updateDirection_args.Add(EntityDef.id2datatypes[5]);
-			pAvatar_updateDirection_args.Add(EntityDef.id2datatypes[16]);
+			List<DATATYPE_BASE> pAvatar_onEnterRoom_args = new List<DATATYPE_BASE>();
+			pAvatar_onEnterRoom_args.Add(EntityDef.id2datatypes[8]);
 
-			Method pAvatar_updateDirection = new Method();
-			pAvatar_updateDirection.name = "updateDirection";
-			pAvatar_updateDirection.methodUtype = 5;
-			pAvatar_updateDirection.aliasID = 1;
-			pAvatar_updateDirection.args = pAvatar_updateDirection_args;
+			Method pAvatar_onEnterRoom = new Method();
+			pAvatar_onEnterRoom.name = "onEnterRoom";
+			pAvatar_onEnterRoom.methodUtype = 3;
+			pAvatar_onEnterRoom.aliasID = 1;
+			pAvatar_onEnterRoom.args = pAvatar_onEnterRoom_args;
 
-			pAvatarModule.methods["updateDirection"] = pAvatar_updateDirection; 
+			pAvatarModule.methods["onEnterRoom"] = pAvatar_onEnterRoom; 
 			pAvatarModule.useMethodDescrAlias = true;
-			pAvatarModule.idmethods[(UInt16)pAvatar_updateDirection.aliasID] = pAvatar_updateDirection;
+			pAvatarModule.idmethods[(UInt16)pAvatar_onEnterRoom.aliasID] = pAvatar_onEnterRoom;
 
-			//Dbg.DEBUG_MSG("EntityDef::initScriptModules: add(Avatar), method(updateDirection / 5).");
+			//Dbg.DEBUG_MSG("EntityDef::initScriptModules: add(Avatar), method(onEnterRoom / 3).");
 
-			List<DATATYPE_BASE> pAvatar_updatePosition_args = new List<DATATYPE_BASE>();
-			pAvatar_updatePosition_args.Add(EntityDef.id2datatypes[5]);
-			pAvatar_updatePosition_args.Add(EntityDef.id2datatypes[16]);
+			List<DATATYPE_BASE> pAvatar_onLeaveRoom_args = new List<DATATYPE_BASE>();
+			pAvatar_onLeaveRoom_args.Add(EntityDef.id2datatypes[8]);
 
-			Method pAvatar_updatePosition = new Method();
-			pAvatar_updatePosition.name = "updatePosition";
-			pAvatar_updatePosition.methodUtype = 4;
-			pAvatar_updatePosition.aliasID = 2;
-			pAvatar_updatePosition.args = pAvatar_updatePosition_args;
+			Method pAvatar_onLeaveRoom = new Method();
+			pAvatar_onLeaveRoom.name = "onLeaveRoom";
+			pAvatar_onLeaveRoom.methodUtype = 4;
+			pAvatar_onLeaveRoom.aliasID = 2;
+			pAvatar_onLeaveRoom.args = pAvatar_onLeaveRoom_args;
 
-			pAvatarModule.methods["updatePosition"] = pAvatar_updatePosition; 
+			pAvatarModule.methods["onLeaveRoom"] = pAvatar_onLeaveRoom; 
 			pAvatarModule.useMethodDescrAlias = true;
-			pAvatarModule.idmethods[(UInt16)pAvatar_updatePosition.aliasID] = pAvatar_updatePosition;
+			pAvatarModule.idmethods[(UInt16)pAvatar_onLeaveRoom.aliasID] = pAvatar_onLeaveRoom;
 
-			//Dbg.DEBUG_MSG("EntityDef::initScriptModules: add(Avatar), method(updatePosition / 4).");
+			//Dbg.DEBUG_MSG("EntityDef::initScriptModules: add(Avatar), method(onLeaveRoom / 4).");
 
-			List<DATATYPE_BASE> pAvatar_reqDirection_args = new List<DATATYPE_BASE>();
-			pAvatar_reqDirection_args.Add(EntityDef.id2datatypes[5]);
-			pAvatar_reqDirection_args.Add(EntityDef.id2datatypes[16]);
+			List<DATATYPE_BASE> pAvatar_onRspFrameMessage_args = new List<DATATYPE_BASE>();
+			pAvatar_onRspFrameMessage_args.Add(EntityDef.id2datatypes[23]);
 
-			Method pAvatar_reqDirection = new Method();
-			pAvatar_reqDirection.name = "reqDirection";
-			pAvatar_reqDirection.methodUtype = 2;
-			pAvatar_reqDirection.aliasID = -1;
-			pAvatar_reqDirection.args = pAvatar_reqDirection_args;
+			Method pAvatar_onRspFrameMessage = new Method();
+			pAvatar_onRspFrameMessage.name = "onRspFrameMessage";
+			pAvatar_onRspFrameMessage.methodUtype = 5;
+			pAvatar_onRspFrameMessage.aliasID = 3;
+			pAvatar_onRspFrameMessage.args = pAvatar_onRspFrameMessage_args;
 
-			pAvatarModule.methods["reqDirection"] = pAvatar_reqDirection; 
-			pAvatarModule.cell_methods["reqDirection"] = pAvatar_reqDirection;
+			pAvatarModule.methods["onRspFrameMessage"] = pAvatar_onRspFrameMessage; 
+			pAvatarModule.useMethodDescrAlias = true;
+			pAvatarModule.idmethods[(UInt16)pAvatar_onRspFrameMessage.aliasID] = pAvatar_onRspFrameMessage;
 
-			pAvatarModule.idcell_methods[pAvatar_reqDirection.methodUtype] = pAvatar_reqDirection;
+			//Dbg.DEBUG_MSG("EntityDef::initScriptModules: add(Avatar), method(onRspFrameMessage / 5).");
 
-			//Dbg.DEBUG_MSG("EntityDef::initScriptModules: add(Avatar), method(reqDirection / 2).");
+			List<DATATYPE_BASE> pAvatar_reqFrameChange_args = new List<DATATYPE_BASE>();
+			pAvatar_reqFrameChange_args.Add(EntityDef.id2datatypes[22]);
 
-			List<DATATYPE_BASE> pAvatar_reqPosition_args = new List<DATATYPE_BASE>();
-			pAvatar_reqPosition_args.Add(EntityDef.id2datatypes[5]);
-			pAvatar_reqPosition_args.Add(EntityDef.id2datatypes[16]);
+			Method pAvatar_reqFrameChange = new Method();
+			pAvatar_reqFrameChange.name = "reqFrameChange";
+			pAvatar_reqFrameChange.methodUtype = 1;
+			pAvatar_reqFrameChange.aliasID = -1;
+			pAvatar_reqFrameChange.args = pAvatar_reqFrameChange_args;
 
-			Method pAvatar_reqPosition = new Method();
-			pAvatar_reqPosition.name = "reqPosition";
-			pAvatar_reqPosition.methodUtype = 1;
-			pAvatar_reqPosition.aliasID = -1;
-			pAvatar_reqPosition.args = pAvatar_reqPosition_args;
+			pAvatarModule.methods["reqFrameChange"] = pAvatar_reqFrameChange; 
+			pAvatarModule.cell_methods["reqFrameChange"] = pAvatar_reqFrameChange;
 
-			pAvatarModule.methods["reqPosition"] = pAvatar_reqPosition; 
-			pAvatarModule.cell_methods["reqPosition"] = pAvatar_reqPosition;
+			pAvatarModule.idcell_methods[pAvatar_reqFrameChange.methodUtype] = pAvatar_reqFrameChange;
 
-			pAvatarModule.idcell_methods[pAvatar_reqPosition.methodUtype] = pAvatar_reqPosition;
-
-			//Dbg.DEBUG_MSG("EntityDef::initScriptModules: add(Avatar), method(reqPosition / 1).");
+			//Dbg.DEBUG_MSG("EntityDef::initScriptModules: add(Avatar), method(reqFrameChange / 1).");
 
 		}
 
@@ -508,6 +503,33 @@ namespace KBEngine
 				DATATYPE_BASE val = null;
 				EntityDef.datatypes.TryGetValue(name, out val);
 				EntityDef.datatypes[typeName] = val;
+				EntityDef.id2datatypes[utype] = EntityDef.datatypes[typeName];
+				EntityDef.datatype2id[typeName] = utype;
+			}
+
+			{
+				UInt16 utype = 22;
+				string typeName = "ENTITY_DATA";
+				DATATYPE_ENTITY_DATA datatype = new DATATYPE_ENTITY_DATA();
+				EntityDef.datatypes[typeName] = datatype;
+				EntityDef.id2datatypes[utype] = EntityDef.datatypes[typeName];
+				EntityDef.datatype2id[typeName] = utype;
+			}
+
+			{
+				UInt16 utype = 23;
+				string typeName = "FRAME_DATA";
+				DATATYPE_FRAME_DATA datatype = new DATATYPE_FRAME_DATA();
+				EntityDef.datatypes[typeName] = datatype;
+				EntityDef.id2datatypes[utype] = EntityDef.datatypes[typeName];
+				EntityDef.datatype2id[typeName] = utype;
+			}
+
+			{
+				UInt16 utype = 25;
+				string typeName = "FRAME_LIST";
+				DATATYPE_FRAME_LIST datatype = new DATATYPE_FRAME_LIST();
+				EntityDef.datatypes[typeName] = datatype;
 				EntityDef.id2datatypes[utype] = EntityDef.datatypes[typeName];
 				EntityDef.datatype2id[typeName] = utype;
 			}

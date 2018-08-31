@@ -31,25 +31,13 @@ namespace KBEngine
 			type = ENTITYCALL_TYPE.ENTITYCALL_TYPE_CELL;
 		}
 
-		public void reqDirection(UInt64 arg1, Vector3 arg2)
+		public void reqFrameChange(ENTITY_DATA arg1)
 		{
-			Bundle pBundle = newCall("reqDirection", 0);
+			Bundle pBundle = newCall("reqFrameChange", 0);
 			if(pBundle == null)
 				return;
 
-			bundle.writeUint64(arg1);
-			bundle.writeVector3(arg2);
-			sendCall(null);
-		}
-
-		public void reqPosition(UInt64 arg1, Vector3 arg2)
-		{
-			Bundle pBundle = newCall("reqPosition", 0);
-			if(pBundle == null)
-				return;
-
-			bundle.writeUint64(arg1);
-			bundle.writeVector3(arg2);
+			((DATATYPE_ENTITY_DATA)EntityDef.id2datatypes[22]).addToStreamEx(bundle, arg1);
 			sendCall(null);
 		}
 

@@ -63,8 +63,6 @@ public class World : MonoBehaviour
 
         KBEngine.Event.registerOut("updatePos", this, "updatePos");
         KBEngine.Event.registerOut("updateDir", this, "updateDir");
-
-        KBEngine.Event.registerOut("onFrameTick", this, "onFrameTick");
     }
 
     void OnDestroy()
@@ -229,11 +227,6 @@ public class World : MonoBehaviour
 //         Debug.Log("world::updatePosition." + entity.id + ",position:" + entity.position + ",direction:" + entity.direction);
     }
 
-    public void  onFrameTick()
-    {
-        CBGlobalEventDispatcher.Instance.TriggerEvent((int)EVENT_ID.EVENT_FRAME_TICK);
-    }
-
     public void updatePos(KBEngine.Entity entity, UInt64 frameid, Vector3 position)
     {
         if (gameObject == null || entity == null || entity.renderObj == null)
@@ -242,10 +235,24 @@ public class World : MonoBehaviour
         GameEntity gameEntity = ((UnityEngine.GameObject)entity.renderObj).GetComponent<GameEntity>();
 
         //        gameEntity.destPosition = position;
-        gameEntity.moveDirection = position;
-        gameEntity.frameId = frameid;
 
-//        Debug.Log("world::updatePos." + entity.id + ",frameid:"+ frameid + ",position:" + position);
+        if(gameEntity.frame_pool.Count <= 0)
+        {
+            gameEntity.frame_pool.Add(position);            
+        }
+        else
+        {
+            for(UInt64 i = gameEntity.lastFrame.Key; i < frameid;i++)
+            {
+                gameEntity.frame_pool.Add(position);
+            }
+        }
+        gameEntity.lastFrame = new KeyValuePair<UInt64, Vector3>(frameid, position);
+
+        //         gameEntity.moveDirection = position;
+        //         gameEntity.frameId = frameid;
+
+        //        Debug.Log("world::updatePos." + entity.id + ",frameid:"+ frameid + ",position:" + position);
     }
     public void updateDir(KBEngine.Entity entity,UInt64 frameid, Vector3 direction)
     {

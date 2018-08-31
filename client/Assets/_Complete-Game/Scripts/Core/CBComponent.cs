@@ -100,5 +100,6 @@ namespace CBFrame.Core
         EVENT_CAMERA_FOLLOW,
         EVENT_PLAYER_HEALTH,
         EVENT_FRAME_UPDATE,
+        EVENT_FRAME_TICK,
     };
 }

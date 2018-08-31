@@ -15,8 +15,8 @@ namespace CompleteProject
         void Start ()
         {
             // Call the Spawn function after a delay of the spawnTime and then continue to call after the same amount of time.
-            InvokeRepeating ("Spawn", spawnTime, spawnTime);
-            CBGlobalEventDispatcher.Instance.AddEventListener<PlayerHealth>((int)EVENT_ID.EVENT_PLAYER_HEALTH, AttachHealth);
+//            InvokeRepeating ("Spawn", spawnTime, spawnTime);
+//            CBGlobalEventDispatcher.Instance.AddEventListener<PlayerHealth>((int)EVENT_ID.EVENT_PLAYER_HEALTH, AttachHealth);
         }
 
         public void AttachHealth(PlayerHealth h)

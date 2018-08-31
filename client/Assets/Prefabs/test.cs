@@ -7,6 +7,7 @@ public class test : MonoBehaviour {
     // Use this for initialization
     private CharacterController m_CharacterController;
     private Rigidbody m_rigid;
+    public float Speed = 20.0f;
 
 
     private void Awake()
@@ -22,6 +23,33 @@ public class test : MonoBehaviour {
 	// Update is called once per frame
 
     
+    void TransformMove(Vector3 movement)
+    {
+        transform.Translate(movement * Speed * Time.deltaTime);
+    }
+
+    void rigdbodyMove(Vector3 movement)
+    {
+        m_rigid.MovePosition(transform.position + movement * Speed * Time.deltaTime);
+    }
+
+    void rigdSpeedMove(Vector3 movement)
+    {
+        m_rigid.velocity = movement * Speed;
+    }
+
+    void towardsMove(Vector3 movement)
+    {
+        Vector3 dest = transform.position + movement * Speed* Time.deltaTime;
+
+        transform.position = Vector3.MoveTowards(transform.position, dest, Speed * Time.deltaTime);
+    }
+
+    void lerpMove(Vector3 movement)
+    {
+        Vector3 dest = transform.position + movement * Speed * Time.deltaTime;
+        transform.position = Vector3.Lerp(transform.position, dest, Speed * Time.deltaTime);
+    }
 
 	void FixedUpdate() {
 
@@ -30,15 +58,7 @@ public class test : MonoBehaviour {
 
         Vector3 movement = new Vector3(h, 0.0f, v);
 
-        m_rigid.velocity += 4.0f * movement * Time.deltaTime;
- //        transform.position += 4.0f * movement *Time.deltaTime;
-
-
-        //       transform.position += new Vector3(2f* h * Time.deltaTime, 0.0f, 2f * v * Time.deltaTime);
-
-        //      Debug.Log("Time.deltaTime = " + Time.deltaTime.ToString("f4"));
-        // m_CharacterController.Move( 4.0f * movement * Time.deltaTime);
-
+        rigdSpeedMove(movement.normalized);
 
     }
 }

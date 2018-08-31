@@ -50,6 +50,9 @@ public class GameEntity : MonoBehaviour
 
     private float frameDuration = 0f;
 
+
+    public KeyValuePair<UInt64, Vector3> lastFrame = new KeyValuePair<UInt64, Vector3>();
+
     public List<Vector3> frame_pool = new List<Vector3>();
 
     Animator anim;                      // Reference to the animator component.
@@ -91,8 +94,7 @@ public class GameEntity : MonoBehaviour
         {
             _moveDirection = value;
 
-            frame_pool.Add(_moveDirection);
-
+//            frame_pool.Add(_moveDirection);
             //           System.TimeSpan time = System.DateTime.Now - GetComponent<PlayerMovement>().startTime;
             //           Debug.Log("TTL time:" + time);
             //m_CharacterController.Move(speed * moveDirection * DeltaTimeSample);
@@ -169,7 +171,7 @@ public class GameEntity : MonoBehaviour
     {
         get
         {
-            _speed = 6.0f;
+            _speed = 10.0f;
             return _speed;
         }
 
@@ -276,14 +278,7 @@ public class GameEntity : MonoBehaviour
 
     public void onUpdate()
     {
-//         if(frame_pool.Count > 0)
-//         {
-//             Vector3 movement = frame_pool[0];
-//             destPosition += speed * movement * DeltaTimeSample;
-//             frame_pool.Remove(movement);
-//         }
-
-        destPosition += speed * moveDirection * DeltaTimeSample;
+//        destPosition += speed * moveDirection * DeltaTimeSample;
     }
 
     private void FixedUpdate()
@@ -315,7 +310,20 @@ public class GameEntity : MonoBehaviour
         if (!isAvatar)
             return;
 
-        position = Vector3.Lerp(position, destPosition, speed * Time.deltaTime);
+        float dist = Vector3.Distance(position, destPosition);
+        if(dist <= 0.001f)
+        {
+            position = destPosition;
+
+            if(FrameDuration < playTime)
+            {
+                Debug.Log("deltTime:" + (playTime - FrameDuration).ToString("f5"));
+            }
+        }
+        else
+            position = Vector3.Lerp(position, destPosition, speed * Time.deltaTime);
+
+        
 
         FrameDuration += Time.deltaTime;
 
@@ -325,7 +333,7 @@ public class GameEntity : MonoBehaviour
             {
                 if (frame_pool.Count > 0)
                 {
-                    Vector3 movement = frame_pool[0];
+                    Vector3 movement = frame_pool;
 
                     destPosition += speed * movement * playTime;
 

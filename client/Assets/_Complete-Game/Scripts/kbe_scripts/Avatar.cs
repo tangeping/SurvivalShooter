@@ -17,8 +17,7 @@ namespace KBEngine
             if (isPlayer())
             {
                 Event.registerIn("relive", this, "relive");
-                Event.registerIn("reqPlayerPos", this, "reqPlayerPos");
-                Event.registerIn("reqPlayerDir", this, "reqPlayerDir");
+                Event.registerIn("reqFrameChange", this, "reqFrameChange");
 
                 // 触发登陆成功事件
                 Event.fireOut("onLoginSuccessfully", new object[] { KBEngineApp.app.entity_uuid, id, this });
@@ -48,20 +47,10 @@ namespace KBEngine
             cellCall("relive", type);
         }
 
-        public virtual void reqPlayerPos(UInt64 frameid,Vector3 pos)
+        public virtual void reqFrameChange(ENTITY_DATA operation)
         {
-            position = pos;
-
-            cellEntityCall.reqPosition(frameid, position);
- //           Debug.Log("Avatar::reqPlayerPos:" + position);
-        }
-
-        public virtual void reqPlayerDir(UInt64 frameid, Vector3 dir)
-        {
-            direction = dir;
-
-            cellEntityCall.reqDirection(frameid, dir);
- //           Debug.Log("Avatar::reqPlayerDir:" + direction);
+            cellEntityCall.reqFrameChange(operation);
+            //Debug.Log("Avatar::reqFrameChange:" + operation);
         }
 
         public override void onModelIDChanged(Byte old)
@@ -94,15 +83,30 @@ namespace KBEngine
             Event.fireOut("set_modelScale", new object[] { this, this.modelScale });
         }
 
-        public override void updatePosition(UInt64 frameid, Vector3 direction)
+        public override void onAvatarEnter(Int32 entityid)
         {
-            Event.fireOut("updatePos", new object[] { this, frameid, direction });
+            KBEngine.Entity e = KBEngineApp.app.findEntity(entityid);
+            if(e == null)
+            {
+                return;
+            }
+
+        }
+        public override void onAvatarLeave(Int32 entityid)
+        {
+            KBEngine.Entity e = KBEngineApp.app.findEntity(entityid);
+            if (e == null)
+            {
+                return;
+            }
+
+        }
+        public override void onRspFrameMessage(FRAME_DATA framedata)
+        {
+
         }
 
-        public override void updateDirection(UInt64 frameid, Vector3 position)
-        {
-            Event.fireOut("updateDir", new object[] { this,frameid,position  });
-        }
+
 
     }
 }

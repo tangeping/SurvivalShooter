@@ -1084,5 +1084,26 @@ namespace KBEngine
 		}
 	}
 
+	public class ENTITY_DATA
+	{
+		public Int32 entityid = 0;
+		public Vector3 position = new Vector3(0f, 0f, 0f);
+		public Vector3 direction = new Vector3(0f, 0f, 0f);
+
+	}
+
+	public class FRAME_DATA
+	{
+		public UInt64 frameid = 0;
+		public List<ENTITY_DATA> operation = new List<ENTITY_DATA>();
+
+	}
+
+	public class FRAME_LIST
+	{
+		public List<FRAME_DATA> values = new List<FRAME_DATA>();
+
+	}
+
 
 }

@@ -6,8 +6,7 @@ namespace CompleteProject
 {
     public class PlayerMovement : MonoBehaviour
     {
-        static UInt64 frameId = 0;
-        public float speed = 60f;            // The speed that the player will move at.
+        public float speed = 6f;            // The speed that the player will move at.
 
         public System.DateTime startTime;
 
@@ -48,7 +47,7 @@ namespace CompleteProject
 
         void OnGUI()
         {  
-            GUI.Label(new Rect(Screen.width - 120, 1, 200, 200),"send:"+frameId.ToString());
+//            GUI.Label(new Rect(Screen.width - 120, 1, 200, 200),"send:"+frameId.ToString());
         }
 
         void FixedUpdate ()
@@ -75,13 +74,12 @@ namespace CompleteProject
 
             if(cacheMove != Movement)
             {
+                Debug.Log("PlayerMovement::Movement:" + Movement);
                 Movement = cacheMove;
-//                Debug.Log("PlayerMovement::Movement:" + Movement);
-                KBEngine.Event.fireIn("reqPlayerPos", frameId, Movement);
 
-                startTime = System.DateTime.Now;
+                KBEngine.Event.fireIn("reqPlayerPos", Movement);
 
-                frameId++;
+//                startTime = System.DateTime.Now;
             }
 
             

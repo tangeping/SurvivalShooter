@@ -12,4 +12,121 @@ namespace KBEngine
 	using System.Collections.Generic;
 
 
+
+	public class DATATYPE_ENTITY_DATA : DATATYPE_BASE
+	{
+		public ENTITY_DATA createFromStreamEx(MemoryStream stream)
+		{
+			ENTITY_DATA datas = new ENTITY_DATA();
+			datas.entityid = stream.readInt32();
+			datas.position = stream.readVector3();
+			datas.direction = stream.readVector3();
+			return datas;
+		}
+
+		public void addToStreamEx(Bundle stream, ENTITY_DATA v)
+		{
+			stream.writeInt32(v.entityid);
+			stream.writeVector3(v.position);
+			stream.writeVector3(v.direction);
+		}
+	}
+
+
+
+	public class DATATYPE_FRAME_DATA : DATATYPE_BASE
+	{
+		private DATATYPE__FRAME_DATA_operation_ArrayType_ChildArray operation_DataType = new DATATYPE__FRAME_DATA_operation_ArrayType_ChildArray();
+
+		public class DATATYPE__FRAME_DATA_operation_ArrayType_ChildArray : DATATYPE_BASE
+		{
+			private DATATYPE_ENTITY_DATA itemType = new DATATYPE_ENTITY_DATA();
+
+			public List<ENTITY_DATA> createFromStreamEx(MemoryStream stream)
+			{
+				UInt32 size = stream.readUint32();
+				List<ENTITY_DATA> datas = new List<ENTITY_DATA>();
+
+				while(size > 0)
+				{
+					--size;
+					datas.Add(itemType.createFromStreamEx(stream));
+				};
+
+				return datas;
+			}
+
+			public void addToStreamEx(Bundle stream, List<ENTITY_DATA> v)
+			{
+				stream.writeUint32((UInt32)v.Count);
+				for(int i=0; i<v.Count; ++i)
+				{
+					itemType.addToStreamEx(stream, v[i]);
+				};
+			}
+		}
+
+		public FRAME_DATA createFromStreamEx(MemoryStream stream)
+		{
+			FRAME_DATA datas = new FRAME_DATA();
+			datas.frameid = stream.readUint64();
+			datas.operation = operation_DataType.createFromStreamEx(stream);
+			return datas;
+		}
+
+		public void addToStreamEx(Bundle stream, FRAME_DATA v)
+		{
+			stream.writeUint64(v.frameid);
+			operation_DataType.addToStreamEx(stream, v.operation);
+		}
+	}
+
+
+
+	public class DATATYPE_FRAME_LIST : DATATYPE_BASE
+	{
+		private DATATYPE__FRAME_LIST_values_ArrayType_ChildArray values_DataType = new DATATYPE__FRAME_LIST_values_ArrayType_ChildArray();
+
+		public class DATATYPE__FRAME_LIST_values_ArrayType_ChildArray : DATATYPE_BASE
+		{
+			private DATATYPE_FRAME_DATA itemType = new DATATYPE_FRAME_DATA();
+
+			public List<FRAME_DATA> createFromStreamEx(MemoryStream stream)
+			{
+				UInt32 size = stream.readUint32();
+				List<FRAME_DATA> datas = new List<FRAME_DATA>();
+
+				while(size > 0)
+				{
+					--size;
+					datas.Add(itemType.createFromStreamEx(stream));
+				};
+
+				return datas;
+			}
+
+			public void addToStreamEx(Bundle stream, List<FRAME_DATA> v)
+			{
+				stream.writeUint32((UInt32)v.Count);
+				for(int i=0; i<v.Count; ++i)
+				{
+					itemType.addToStreamEx(stream, v[i]);
+				};
+			}
+		}
+
+		public FRAME_LIST createFromStreamEx(MemoryStream stream)
+		{
+			FRAME_LIST datas = new FRAME_LIST();
+			datas.values = values_DataType.createFromStreamEx(stream);
+			return datas;
+		}
+
+		public void addToStreamEx(Bundle stream, FRAME_LIST v)
+		{
+			values_DataType.addToStreamEx(stream, v.values);
+		}
+	}
+
+
 }
