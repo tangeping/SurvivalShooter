@@ -91,6 +91,22 @@ class Avatar(KBEngine.Entity, EntityCommon):
 
 		DEBUG_MSG("Avatar::relive: %i, type=%i." % (self.id, type))
 
+	def stateChange(self,state):
+		"""
+		defined
+		"""
+
+		if self.state == state :
+			return
+
+		self.state = state
+
+	def getState(self):
+		"""
+		defined
+		"""
+		return self.state
+
 	def reqFrameChange(self,exposed,framedata):
 		"""
 		上传操作帧
@@ -100,6 +116,20 @@ class Avatar(KBEngine.Entity, EntityCommon):
 
 		self.getCurrRoom().addFrame(self,framedata)
 
+
+
+	def onUpdateBegin(self):
+		"""
+		同步帧开始调用
+		"""
+		self.getCurrRoom().onBroadFrameBegin(self)
+
+	def onUpdateEnd(self):
+		"""
+		同步帧结束时调用
+		"""
+
+		pass
 
 
 #		self.allClients.updatePosition(self.getCurrRoom().frameId,position)

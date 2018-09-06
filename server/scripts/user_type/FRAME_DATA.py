@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import KBEngine
-import GlobalConst
 from KBEDebug import *
 
 class TFrameData(list):
@@ -13,7 +12,7 @@ class TFrameData(list):
 
     def asDict(self):
         data = {
-            "frameid"   : self[0]
+            "frameid"   : self[0],
             "operation" : self[1],
         }
         return data

@@ -8,8 +8,8 @@
 	<POSITION3D>		VECTOR3		</POSITION3D>
 	<DIRECTION3D>		VECTOR3		</DIRECTION3D>
 	<SPACE_KEY>				UINT64		</SPACE_KEY>
-    <FRAMEID>             UINT64      </FRAMEID>
-
+    <FRAMEID>             UINT32      </FRAMEID>
+    <CMD_TYPE>             UINT8      </CMD_TYPE>
 
 	<ENTITY_DATA>	FIXED_DICT
 		<implementedBy>ENTITY_DATA.inst</implementedBy>
@@ -17,12 +17,12 @@
 			<entityid>
 				<Type>	ENTITY_ID	</Type>
 			</entityid>
-			<position>
-				<Type>	POSITION3D	</Type>
-			</position>
-			<direction>
-				<Type>	DIRECTION3D	</Type>
-			</direction>
+			<cmd_type>
+				<Type>	CMD_TYPE	</Type>
+			</cmd_type>
+			<datas>
+				<Type>	BLOB	</Type>
+			</datas>
 		</Properties>
 	</ENTITY_DATA>
 

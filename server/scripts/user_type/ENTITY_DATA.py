@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import KBEngine
-import CmdType
 from KBEDebug import *
 
 
@@ -15,13 +14,13 @@ class TEntityFrame(list):
     def asDict(self):
         data = {
             "entityid"  : self[0],
-            "position"  : self[1],
-            "direction" : self[2],
+            "cmd_type"   : self[1],
+            "datas"     : self[2],
         }
         return data
 
     def createFromDict(self, dictData):
-        self.extend([dictData["entityid"], dictData["position"], dictData["direction"]])
+        self.extend([dictData["entityid"], dictData["cmd_type"], dictData["datas"]])
         return self
 
 

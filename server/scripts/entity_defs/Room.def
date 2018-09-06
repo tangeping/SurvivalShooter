@@ -11,6 +11,11 @@
 			<Flags>			CELL_PUBLIC			</Flags>
 		</roomKeyC>
 
+		<roomFarmeId>
+			<Type>			FRAMEID			</Type>
+			<Flags>			CELL_PUBLIC			</Flags>
+		</roomFarmeId>
+
 		<currFrame>
 			<Type>			FRAME_DATA			</Type>
 			<Flags>			CELL_PUBLIC			</Flags>
@@ -55,6 +60,20 @@
 		<onLeave>
 			<Arg>		ENTITY_ID		</Arg>
 		</onLeave>
+
+		<addFrame>
+			<Arg>			ENTITYCALL				 </Arg>
+			<Arg>           ENTITY_DATA               </Arg>
+		</addFrame>
+
+		<onBroadFrameBegin>
+			<Arg>			ENTITYCALL				 </Arg>
+		</onBroadFrameBegin>
+
+		<onBroadFrameEnd>
+			<Arg>			ENTITYCALL				 </Arg>
+		</onBroadFrameEnd>
+
 	</CellMethods>
 
 </root>

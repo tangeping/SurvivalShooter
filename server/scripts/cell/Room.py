@@ -5,6 +5,10 @@ import GameConfigs
 import random
 import GameUtils
 
+from ENTITY_DATA import TEntityFrame
+from FRAME_DATA import TFrameData
+from FRAME_LIST import TFrameList
+
 TIMER_TYPE_DESTROY = 1
 TIMER_TYPE_BALANCE_MASS = 2
 
@@ -18,11 +22,11 @@ class Room(KBEngine.Entity):
 		# 把自己移动到一个不可能触碰陷阱的地方
 		self.position = (0.0, 0.0, 0.0)
 
-		self.frameId = 0
-
-
-
 		self.avatars = {}
+
+		self.frameCompelete = False
+
+		self.frameBegin = False
 
 		# 告诉客户端加载地图
 		KBEngine.addSpaceGeometryMapping(self.spaceID, None, "spaces/gameMap")
@@ -37,7 +41,7 @@ class Room(KBEngine.Entity):
 		KBEngine.setSpaceData(self.spaceID, "ROOM_MAX_PLAYER",  str(GameConfigs.ROOM_MAX_PLAYER))
 		KBEngine.setSpaceData(self.spaceID, "GAME_ROUND_TIME",  str(GameConfigs.GAME_ROUND_TIME))
 
-#		self.framePool[self.frameId].append(framedata)
+
 
 
 	#--------------------------------------------------------------------------------------------
@@ -73,9 +77,9 @@ class Room(KBEngine.Entity):
 		"""
 		self.avatars[entityCall.id] = entityCall
 
-		self.broadcastOther(entityCall)
+		self.broadEnterOther(entityCall)
 
-		self.broadcastMe(entityCall)
+		self.broadEnterMe(entityCall)
 
 		DEBUG_MSG('Room::onEnter space[%d] entityID = %i.' % (self.spaceID, entityCall.id))
 
@@ -86,6 +90,8 @@ class Room(KBEngine.Entity):
 		离开场景
 		"""
 		if entityID in self.avatars:
+			if self.avatars[entityID] == GameConfigs.ENTITY_STATE_FREE:
+				self.onFrameCompelete()
 			del self.avatars[entityID]
 
 		self.broadLeaveOther(entityCall)
@@ -95,6 +101,7 @@ class Room(KBEngine.Entity):
 
 	def broadEnterOther(self,entityCall):
 
+		DEBUG_MSG('Room::broadEnterOther is =%i,avatars = %s ' % (entityCall.id,str(self.avatars)))
 		if entityCall is None:
 			return
 
@@ -102,17 +109,20 @@ class Room(KBEngine.Entity):
 			if e.id == entityCall.id:
 				continue
 			elif e.client is not None:
+				DEBUG_MSG('Room::broadEnterOther space[%d] entityID = %i.' % (self.spaceID, entityCall.id))
 				e.client.onEnterRoom(entityCall.id)
 
 	def broadEnterMe(self,entityCall):
 
+		DEBUG_MSG('Room::broadEnterMe is =%i,avatars = %s ' % (entityCall.id,str(self.avatars)))
 		if entityCall is None:
 			return
 
 		for e in self.avatars.values():
-			if e.id == entityCall.id:
-				continue
-			elif e.client is not None:
+#			if e.id == entityCall.id:
+#				continue
+			if e.client is not None:
+				DEBUG_MSG('Room::broadEnterMe space[%d] entityID = %i.' % (self.spaceID, e.id))
 				entityCall.client.onEnterRoom(e.id)
 
 	def broadLeaveOther(self,entityCall):
@@ -139,31 +149,69 @@ class Room(KBEngine.Entity):
 		"""
 		添加数据帧
 		"""
-
 		if entityCall is None :
 			return
 
-		if len(self.currFrame) <= 0 :
-			self.currFrame = TFrameData().createFromDict({"frameid":self.frameId,"operation":framedata})
+		DEBUG_MSG("Room:: addFrame:%s" % (str(framedata)))
+
+		if len(self.currFrame) < 2 :
+			self.currFrame = TFrameData().createFromDict({"frameid":self.roomFarmeId,"operation":
+				[TEntityFrame().createFromDict({"entityid":framedata[0],"cmd_type":framedata[1],"datas":framedata[2]})]})
 		else:
 			self.currFrame[1].append(framedata)
 
-		self.framePool[self.frameid] = self.currFrame
+		self.frameBegin = True
 
-	def onUpdateBegin( self ):
+	def onFrameCompelete(self):
 		"""
-		同步帧开始调用
 		"""
-		if len(self.currFrame) <=0 :
+#		DEBUG_MSG("onFrameCompelete:: avatars:%s" % (str(self.avatars)))
+
+		for e in self.avatars.values():
+			if e.getState() != GameConfigs.ENTITY_STATE_SEND:
+				return;
+
+		self.roomFarmeId += 1
+		self.framePool[self.roomFarmeId] = self.currFrame
+		self.currFrame.clear()
+
+		for e in self.avatars.values():
+			e.stateChange(GameConfigs.ENTITY_STATE_FREE)
+
+	def onBroadFrameBegin(self,entityCall):
+
+		if entityCall is None or entityCall.client is None or not self.frameBegin:
 			return
 
-		self.broadMessage(self.currFrame)
+		if entityCall.frameId > self.roomFarmeId or entityCall.getState() == GameConfigs.ENTITY_STATE_SEND:
+			ERROR_MSG('Room::onBroadFrameBegin room[%d] entityID = %i,state= %i, frameId = %i , roomFarmeId = %i'
+				% (self.spaceID, entityCall.id,entityCall.getState(), entityCall.frameId,self.roomFarmeId))
+			return
 
-	def onUpdateEnd( self ):
+		entityCall.frameId = self.roomFarmeId
+
+		entityCall.stateChange(GameConfigs.ENTITY_STATE_SEND)
+
+		sendFrame = list()
+
+		if len(self.currFrame) >=2:
+			sendFrame = self.currFrame
+		else :
+			sendFrame = TFrameData().createFromDict({"frameid":self.roomFarmeId,
+				"operation":[TEntityFrame().createFromDict({"entityid":0,"cmd_type":0,"datas":b''})]})
+
+		entityCall.client.onRspFrameMessage(sendFrame)
+
+		DEBUG_MSG("Room::onBroadFrameBegin,currFrame:%s" % str(sendFrame))
+
+		self.onFrameCompelete()
+
+	def onBroadFrameEnd(self,entityCall):
 		"""
-		同步帧结束时调用
 		"""
-		self.frameId++
-		self.currFrame = TFrameData()
 		pass
+
+
+
+
 

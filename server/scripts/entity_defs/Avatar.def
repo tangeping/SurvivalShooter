@@ -42,11 +42,19 @@
 		</modelScale>
 
 		<state>
-			<Type>		INT8				</Type> <!-- 为0时处于保护状态，1时可被吃 -->
-			<Flags>		ALL_CLIENTS			</Flags>
-			<Persistent>		true				</Persistent>
+			<Type>		INT8				</Type>
+			<Flags>		CELL_PUBLIC			</Flags>
+			<Persistent>		false		</Persistent>
 			<Default>		0				</Default>
 		</state>
+
+        <frameId>
+            <Type>      FRAMEID                </Type>
+            <Flags>     CELL_PUBLIC         </Flags>
+            <Persistent>        false                </Persistent>
+            <Default>       0               </Default>
+        </frameId>
+
 	</Properties>
 
 	<ClientMethods>

@@ -7,8 +7,9 @@
 # entity state
 # ------------------------------------------------------------------------------
 ENTITY_STATE_UNKNOW									= -1
-ENTITY_STATE_SAFE										= 0
-ENTITY_STATE_FREE										= 1
+ENTITY_STATE_FREE										= 0
+ENTITY_STATE_SEND                                       = 2
+
 ENTITY_STATE_MAX    									= 4
 
 
@@ -21,7 +22,7 @@ PLAYER_LIMIT_SPLIT = 16
 #  一局游戏时间（秒）
 GAME_ROUND_TIME = 720 #60 * 12
 
-# 游戏中粮食和粉碎球平衡刷新时间 
+# 游戏中粮食和粉碎球平衡刷新时间
 GAME_BALANCE_MASS_TIME = 1
 
 # Bots机器人AI频率（秒）
