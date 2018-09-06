@@ -10,6 +10,7 @@ namespace KBEngine
     {
         public Avatar()
         {
+            
         }
 
         public override void __init__()
@@ -22,6 +23,7 @@ namespace KBEngine
                 // 触发登陆成功事件
                 Event.fireOut("onLoginSuccessfully", new object[] { KBEngineApp.app.entity_uuid, id, this });
             }
+            
         }
 
         public override void onDestroy()
@@ -49,6 +51,7 @@ namespace KBEngine
 
         public virtual void reqFrameChange(ENTITY_DATA operation)
         {
+            operation.entityid = id;
             cellEntityCall.reqFrameChange(operation);
             //Debug.Log("Avatar::reqFrameChange:" + operation);
         }
@@ -83,27 +86,30 @@ namespace KBEngine
             Event.fireOut("set_modelScale", new object[] { this, this.modelScale });
         }
 
-        public override void onAvatarEnter(Int32 entityid)
+        public override void onEnterRoom(Int32 entityid)
         {
-            KBEngine.Entity e = KBEngineApp.app.findEntity(entityid);
-            if(e == null)
+            KBEngine.Entity other = KBEngineApp.app.findEntity(entityid);
+            if(other == null)
             {
                 return;
             }
-
+            Event.fireOut("onEnterRoom", new object[] { this, other });
         }
-        public override void onAvatarLeave(Int32 entityid)
+
+        public override void onLeaveRoom(Int32 entityid)
         {
-            KBEngine.Entity e = KBEngineApp.app.findEntity(entityid);
-            if (e == null)
+            KBEngine.Entity other = KBEngineApp.app.findEntity(entityid);
+            if (other == null)
             {
                 return;
             }
-
+            Event.fireOut("onEnterRoom", new object[] { this, other });
         }
+
         public override void onRspFrameMessage(FRAME_DATA framedata)
         {
-
+            Event.fireOut("onRecieveFrame", new object[] { this, framedata });
+ //           Debug.Log("--onRspFrameMessage tick : " + DateTime.Now.ToString() + ":" + DateTime.Now.Millisecond.ToString() + ",frameid:"+ framedata.frameid);
         }
 
 

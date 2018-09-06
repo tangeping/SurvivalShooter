@@ -19,16 +19,16 @@ namespace KBEngine
 		{
 			ENTITY_DATA datas = new ENTITY_DATA();
 			datas.entityid = stream.readInt32();
-			datas.position = stream.readVector3();
-			datas.direction = stream.readVector3();
+			datas.cmd_type = stream.readUint8();
+			datas.datas = stream.readBlob();
 			return datas;
 		}
 
 		public void addToStreamEx(Bundle stream, ENTITY_DATA v)
 		{
 			stream.writeInt32(v.entityid);
-			stream.writeVector3(v.position);
-			stream.writeVector3(v.direction);
+			stream.writeUint8(v.cmd_type);
+			stream.writeBlob(v.datas);
 		}
 	}
 
@@ -69,14 +69,14 @@ namespace KBEngine
 		public FRAME_DATA createFromStreamEx(MemoryStream stream)
 		{
 			FRAME_DATA datas = new FRAME_DATA();
-			datas.frameid = stream.readUint64();
+			datas.frameid = stream.readUint32();
 			datas.operation = operation_DataType.createFromStreamEx(stream);
 			return datas;
 		}
 
 		public void addToStreamEx(Bundle stream, FRAME_DATA v)
 		{
-			stream.writeUint64(v.frameid);
+			stream.writeUint32(v.frameid);
 			operation_DataType.addToStreamEx(stream, v.operation);
 		}
 	}

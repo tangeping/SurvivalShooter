@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 114206881019485444}
   - component: {fileID: 82097733027313632}
   - component: {fileID: 143769272467665122}
-  - component: {fileID: 114020893954210288}
+  - component: {fileID: 114269808460994326}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -420,25 +420,6 @@ Light:
   m_UseColorTemperature: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
---- !u!114 &114020893954210288
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1050465016774588}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d63d7061260693149bb47d190bbc62df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isPlayer: 0
-  isAvatar: 0
-  smoothing: 5
-  entity_name: 
-  isOnGround: 1
-  isControlled: 0
-  entityEnabled: 1
-  frameId: 0
 --- !u!114 &114206881019485444
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -459,6 +440,20 @@ MonoBehaviour:
   deathClip: {fileID: 8300000, guid: d36a393bca4582043982db9089e1694f, type: 3}
   flashSpeed: 5
   flashColour: {r: 1, g: 0, b: 0, a: 0.09803922}
+--- !u!114 &114269808460994326
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1050465016774588}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10661ab7272b2524888d8799ae2296ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isPlayer: 0
+  isAvatar: 0
+  entityEnabled: 1
 --- !u!114 &114727410204523552
 MonoBehaviour:
   m_ObjectHideFlags: 1

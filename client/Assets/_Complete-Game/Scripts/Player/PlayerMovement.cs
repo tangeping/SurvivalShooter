@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Frame;
+using KBEngine;
+using System;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
 
@@ -74,11 +77,10 @@ namespace CompleteProject
 
             if(cacheMove != Movement)
             {
-                Debug.Log("PlayerMovement::Movement:" + Movement);
+//                Debug.Log("PlayerMovement::Movement:" + Movement);
                 Movement = cacheMove;
 
-                KBEngine.Event.fireIn("reqPlayerPos", Movement);
-
+                KBEngine.Event.fireIn("reqFrameChange", FrameProto.encode(new FrameUser(Frame.CMD.USER,Movement)));
 //                startTime = System.DateTime.Now;
             }
 

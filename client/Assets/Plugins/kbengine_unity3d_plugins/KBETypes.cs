@@ -1049,37 +1049,74 @@ namespace KBEngine
 
 	public struct FRAMEID
 	{
-		UInt64 value;
+		UInt32 value;
 
-		FRAMEID(UInt64 value)
+		FRAMEID(UInt32 value)
 		{
 			this.value = value;
 		}
 
-		public static implicit operator UInt64(FRAMEID value)
+		public static implicit operator UInt32(FRAMEID value)
 		{
 			return value.value;
 		}
 
-		public static implicit operator FRAMEID(UInt64 value)
+		public static implicit operator FRAMEID(UInt32 value)
 		{
-			UInt64 tvalue = (UInt64)value;
+			UInt32 tvalue = (UInt32)value;
 			return new FRAMEID(tvalue);
 		}
 
-		public static UInt64 MaxValue
+		public static UInt32 MaxValue
 		{
 			get
 			{
-				return UInt64.MaxValue;
+				return UInt32.MaxValue;
 			}
 		}
 
-		public static UInt64 MinValue
+		public static UInt32 MinValue
 		{
 			get
 			{
-				return UInt64.MinValue;
+				return UInt32.MinValue;
+			}
+		}
+	}
+
+	public struct CMD_TYPE
+	{
+		Byte value;
+
+		CMD_TYPE(Byte value)
+		{
+			this.value = value;
+		}
+
+		public static implicit operator Byte(CMD_TYPE value)
+		{
+			return value.value;
+		}
+
+		public static implicit operator CMD_TYPE(Byte value)
+		{
+			Byte tvalue = (Byte)value;
+			return new CMD_TYPE(tvalue);
+		}
+
+		public static Byte MaxValue
+		{
+			get
+			{
+				return Byte.MaxValue;
+			}
+		}
+
+		public static Byte MinValue
+		{
+			get
+			{
+				return Byte.MinValue;
 			}
 		}
 	}
@@ -1087,14 +1124,14 @@ namespace KBEngine
 	public class ENTITY_DATA
 	{
 		public Int32 entityid = 0;
-		public Vector3 position = new Vector3(0f, 0f, 0f);
-		public Vector3 direction = new Vector3(0f, 0f, 0f);
+		public Byte cmd_type = 0;
+		public byte[] datas = new byte[0];
 
 	}
 
 	public class FRAME_DATA
 	{
-		public UInt64 frameid = 0;
+		public UInt32 frameid = 0;
 		public List<ENTITY_DATA> operation = new List<ENTITY_DATA>();
 
 	}

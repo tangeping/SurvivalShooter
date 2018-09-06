@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using CBFrame.Sys;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,6 +10,8 @@ public class test : MonoBehaviour {
     private Rigidbody m_rigid;
     public float Speed = 20.0f;
 
+    bool isFirst = false;
+    int Count = 0;
 
     private void Awake()
     {
@@ -18,6 +21,8 @@ public class test : MonoBehaviour {
     {
         //       m_CharacterController = GetComponent<CharacterController>();
         m_rigid = GetComponent<Rigidbody>();
+
+        CBGlobalEventDispatcher.Instance.AddEventListener(126, TestEvent);
     }
 	
 	// Update is called once per frame
@@ -60,5 +65,18 @@ public class test : MonoBehaviour {
 
         rigdSpeedMove(movement.normalized);
 
+        if(!isFirst)
+        {
+            isFirst = true;
+            CBGlobalEventDispatcher.Instance.TriggerEvent(126);
+        }
+
+    }
+
+    void TestEvent()
+    {
+        Debug.Log("-------count:" + Count);
+
+        Count++;
     }
 }

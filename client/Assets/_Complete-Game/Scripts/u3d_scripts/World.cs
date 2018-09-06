@@ -44,25 +44,30 @@ public class World : MonoBehaviour
     {
         // in world
         KBEngine.Event.registerOut("addSpaceGeometryMapping", this, "addSpaceGeometryMapping");
-        KBEngine.Event.registerOut("onEnterWorld", this, "onEnterWorld");
-        KBEngine.Event.registerOut("onLeaveWorld", this, "onLeaveWorld");
+        //         KBEngine.Event.registerOut("onEnterWorld", this, "onEnterWorld");
+        //         KBEngine.Event.registerOut("onLeaveWorld", this, "onLeaveWorld");
+
+        KBEngine.Event.registerOut("onEnterRoom", this, "onEnterRoom");
+        KBEngine.Event.registerOut("onEnterRoom", this, "onEnterRoom");
+        KBEngine.Event.registerOut("onRecieveFrame", this, "onRecieveFrame");
+
         KBEngine.Event.registerOut("set_position", this, "set_position");
         KBEngine.Event.registerOut("set_direction", this, "set_direction");
-        KBEngine.Event.registerOut("updatePosition", this, "updatePosition");
+//        KBEngine.Event.registerOut("updatePosition", this, "updatePosition");
         KBEngine.Event.registerOut("onControlled", this, "onControlled");
         KBEngine.Event.registerOut("onSetSpaceData", this, "onSetSpaceData");
         KBEngine.Event.registerOut("onDelSpaceData", this, "onDelSpaceData");
 
         // in world(register by scripts)
-        KBEngine.Event.registerOut("onAvatarEnterWorld", this, "onAvatarEnterWorld");
+//        KBEngine.Event.registerOut("onAvatarEnterWorld", this, "onAvatarEnterWorld");
         KBEngine.Event.registerOut("set_name", this, "set_entityName");
         KBEngine.Event.registerOut("set_state", this, "set_state");
         KBEngine.Event.registerOut("set_moveSpeed", this, "set_moveSpeed");
         KBEngine.Event.registerOut("set_modelScale", this, "set_modelScale");
         KBEngine.Event.registerOut("set_modelID", this, "set_modelID");
 
-        KBEngine.Event.registerOut("updatePos", this, "updatePos");
-        KBEngine.Event.registerOut("updateDir", this, "updateDir");
+//         KBEngine.Event.registerOut("updatePos", this, "updatePos");
+//         KBEngine.Event.registerOut("updateDir", this, "updateDir");
     }
 
     void OnDestroy()
@@ -135,6 +140,7 @@ public class World : MonoBehaviour
         entity.entityDisable();
         entity.isAvatar = true;
         entity.isPlayer = true;
+        entity.entity = avatar;
  
         // 有必要设置一下，由于该接口由Update异步调用，有可能set_position等初始化信息已经先触发了
         // 那么如果不设置renderObj的位置和方向将为0
@@ -150,40 +156,92 @@ public class World : MonoBehaviour
 
     }
 
-    public void onEnterWorld(KBEngine.Entity entity)
+//     public void onEnterWorld(KBEngine.Entity entity)
+//     {
+//         if (entity.isPlayer())
+//         {
+//             createPlayer();
+//         }
+//         else
+//         {
+//             UnityEngine.GameObject entityPerfab = null;
+// 
+//             entityPerfab = avatarPerfab;
+// 
+//             entity.renderObj = Instantiate(entityPerfab, entity.position, Quaternion.Euler(entity.direction))
+//                 as UnityEngine.GameObject;
+// 
+//             ((UnityEngine.GameObject)entity.renderObj).name = entity.className + "_" + entity.id;
+// 
+//             if (entity.className == "Avatar")
+//             {
+//                 ((UnityEngine.GameObject)entity.renderObj).GetComponent<GameEntity>().isAvatar = true;
+//                 set_position(entity);
+//                 set_direction(entity);
+//             }
+//         }
+//     }
+// 
+//     public void onLeaveWorld(KBEngine.Entity entity)
+//     {
+//         if (entity.renderObj == null)
+//             return;
+// 
+//         UnityEngine.GameObject.Destroy((UnityEngine.GameObject)entity.renderObj);
+//         entity.renderObj = null;
+//     }
+
+    public void onEnterRoom(KBEngine.Entity me, KBEngine.Entity other)
     {
-        if (entity.isPlayer())
+        if (other.isPlayer())
         {
             createPlayer();
+            return;
         }
-        else
+
+        UnityEngine.GameObject entityPerfab = avatarPerfab;
+
+        other.renderObj = Instantiate(entityPerfab, other.position, Quaternion.Euler(other.direction))
+            as UnityEngine.GameObject;
+
+        ((UnityEngine.GameObject)other.renderObj).name = other.className + "_" + other.id;
+
+        if (other.className == "Avatar")
         {
-            UnityEngine.GameObject entityPerfab = null;
-
-            entityPerfab = avatarPerfab;
-
-            entity.renderObj = Instantiate(entityPerfab, entity.position, Quaternion.Euler(entity.direction))
-                as UnityEngine.GameObject;
-
-            ((UnityEngine.GameObject)entity.renderObj).name = entity.className + "_" + entity.id;
-
-            if (entity.className == "Avatar")
-            {
-                ((UnityEngine.GameObject)entity.renderObj).GetComponent<GameEntity>().isAvatar = true;
-                set_position(entity);
-                set_direction(entity);
-            }
+            ((UnityEngine.GameObject)other.renderObj).GetComponent<GameEntity>().isAvatar = true;
+            ((UnityEngine.GameObject)other.renderObj).GetComponent<GameEntity>().entity = other;
+            set_position(other);
+            set_direction(other);
         }
+
+    }
+    public void onLeaveRoom(KBEngine.Entity me, KBEngine.Entity other)
+    {
+        if (other.renderObj == null)
+            return;
+
+        UnityEngine.GameObject.Destroy((UnityEngine.GameObject)other.renderObj);
+        other.renderObj = null;
     }
 
-    public void onLeaveWorld(KBEngine.Entity entity)
+    public void onRecieveFrame(KBEngine.Entity entity,FRAME_DATA frameMsg)
     {
         if (entity.renderObj == null)
             return;
 
-        UnityEngine.GameObject.Destroy((UnityEngine.GameObject)entity.renderObj);
-        entity.renderObj = null;
+        //        Debug.Log("----------onRecieveFrame tick : " + DateTime.Now.TimeOfDay.ToString());
+
+         CBGlobalEventDispatcher.Instance.TriggerEvent((int)EVENT_ID.EVENT_FRAME_TICK, frameMsg);
+
+//         for (int i = 0; i < frameMsg.operation.Count; i++)
+//         {
+//             ENTITY_DATA entityData = frameMsg.operation[i];
+// 
+//             CBGlobalEventDispatcher.Instance.TriggerEvent((int)EVENT_ID.EVENT_FRAME_CMD,frameMsg.frameid, entityData);
+//   
+//         }
     }
+
 
     public void onSetSpaceData(UInt32 spaceID, string key, string value)
     {
@@ -207,109 +265,26 @@ public class World : MonoBehaviour
         Debug.Log("World::set_position." + entity.id + ",position:" + entity.position);
 
         GameObject go = ((UnityEngine.GameObject)entity.renderObj);
-
-        go.GetComponent<GameEntity>().destPosition = entity.position;
-        go.GetComponent<GameEntity>().position = entity.position;
-    }
-
-    public void updatePosition(KBEngine.Entity entity)
-    {
-//         if (gameObject == null || entity == null || entity.renderObj == null)
-//             return;
-// 
-//         GameEntity gameEntity = ((UnityEngine.GameObject)entity.renderObj).GetComponent<GameEntity>();
-//         GameObject go = ((UnityEngine.GameObject)entity.renderObj);
-// 
-//         gameEntity.destPosition = entity.position;
-//         gameEntity.destDirection = entity.direction;
-//         gameEntity.isOnGround = entity.isOnGround;
-// 
-//         Debug.Log("world::updatePosition." + entity.id + ",position:" + entity.position + ",direction:" + entity.direction);
-    }
-
-    public void updatePos(KBEngine.Entity entity, UInt64 frameid, Vector3 position)
-    {
-        if (gameObject == null || entity == null || entity.renderObj == null)
-            return;
-
-        GameEntity gameEntity = ((UnityEngine.GameObject)entity.renderObj).GetComponent<GameEntity>();
-
-        //        gameEntity.destPosition = position;
-
-        if(gameEntity.frame_pool.Count <= 0)
-        {
-            gameEntity.frame_pool.Add(position);            
-        }
-        else
-        {
-            for(UInt64 i = gameEntity.lastFrame.Key; i < frameid;i++)
-            {
-                gameEntity.frame_pool.Add(position);
-            }
-        }
-        gameEntity.lastFrame = new KeyValuePair<UInt64, Vector3>(frameid, position);
-
-        //         gameEntity.moveDirection = position;
-        //         gameEntity.frameId = frameid;
-
-        //        Debug.Log("world::updatePos." + entity.id + ",frameid:"+ frameid + ",position:" + position);
-    }
-    public void updateDir(KBEngine.Entity entity,UInt64 frameid, Vector3 direction)
-    {
-        if (gameObject == null || entity == null || entity.renderObj == null)
-            return;
-
-        GameEntity gameEntity = ((UnityEngine.GameObject)entity.renderObj).GetComponent<GameEntity>();
-
-        gameEntity.destDirection = direction;
-
-        Debug.Log("world::updateDir." + entity.id + ",frameid:" + frameid + ",direction:" + direction );
     }
 
     public void onControlled(KBEngine.Entity entity, bool isControlled)
     {
         if (entity.renderObj == null)
             return;
-
-        GameEntity gameEntity = ((UnityEngine.GameObject)entity.renderObj).GetComponent<GameEntity>();
-        gameEntity.isControlled = isControlled;
     }
 
     public void set_direction(KBEngine.Entity entity)
     {
-        if (gameObject == null || entity.renderObj == null)
-            return;
-        Debug.Log("World::set_direction." + entity.id + ",direction:" + entity.direction);
 
-        ((UnityEngine.GameObject)entity.renderObj).GetComponent<GameEntity>().destDirection = entity.direction;
     }
 
     public void set_entityName(KBEngine.Entity entity, object v)
     {
-        if (entity.renderObj != null)
-        {
-            ((UnityEngine.GameObject)entity.renderObj).GetComponent<GameEntity>().entity_name = (string)v;
-        }
+
     }
 
     public void set_state(KBEngine.Entity entity, object v)
     {
-        if (entity.renderObj != null)
-        {
-            ((UnityEngine.GameObject)entity.renderObj).GetComponent<GameEntity>().set_state((SByte)v);
-        }
-
-        if (entity.isPlayer())
-        {
-            Debug.Log("player->set_state: " + v);
-
-            if (((SByte)v) == 1)
-                UI.inst.showReliveGUI = true;
-            else
-                UI.inst.showReliveGUI = false;
-
-            return;
-        }
     }
 
     public void set_moveSpeed(KBEngine.Entity entity, object v)
@@ -318,29 +293,16 @@ public class World : MonoBehaviour
 
         Debug.Log("player->fspeed: " + v);
 
-        if (entity.renderObj != null)
-        {
-            ((UnityEngine.GameObject)entity.renderObj).GetComponent<GameEntity>().speed = fspeed;
-        }
     }
 
     public void set_modelScale(KBEngine.Entity entity, object v)
     {
         float modelScale = ((float)v);
-
-        if (entity.renderObj != null)
-        {
-            ((UnityEngine.GameObject)entity.renderObj).GetComponent<GameEntity>().set_modelScale(modelScale);
-        }
     }
 
     public void set_modelID(KBEngine.Entity entity, object v)
     {
         Byte modelID = ((Byte)v);
 
-        if (entity.renderObj != null)
-        {
-            ((UnityEngine.GameObject)entity.renderObj).GetComponent<GameEntity>().set_modelID(modelID);
-        }
     }
 }

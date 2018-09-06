@@ -35,7 +35,7 @@ namespace CompleteProject
             target = null;
         }
 
-        void FixedUpdate ()
+        void Update ()
         {
             if (target != null)
             { // Create a postion the camera is aiming for based on the offset from the target.

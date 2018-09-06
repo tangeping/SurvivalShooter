@@ -139,7 +139,7 @@ namespace KBEngine
 
 			Property pAvatar_modelID = new Property();
 			pAvatar_modelID.name = "modelID";
-			pAvatar_modelID.properUtype = 8;
+			pAvatar_modelID.properUtype = 9;
 			pAvatar_modelID.properFlags = 4;
 			pAvatar_modelID.aliasID = 5;
 			Byte Avatar_modelID_defval;
@@ -150,7 +150,7 @@ namespace KBEngine
 			pAvatarModule.usePropertyDescrAlias = true;
 			pAvatarModule.idpropertys[(UInt16)pAvatar_modelID.aliasID] = pAvatar_modelID;
 
-			//Dbg.DEBUG_MSG("EntityDef::initScriptModules: add(Avatar), property(modelID / 8).");
+			//Dbg.DEBUG_MSG("EntityDef::initScriptModules: add(Avatar), property(modelID / 9).");
 
 			Property pAvatar_modelScale = new Property();
 			pAvatar_modelScale.name = "modelScale";
@@ -195,21 +195,6 @@ namespace KBEngine
 			pAvatarModule.idpropertys[(UInt16)pAvatar_name.aliasID] = pAvatar_name;
 
 			//Dbg.DEBUG_MSG("EntityDef::initScriptModules: add(Avatar), property(name / 2).");
-
-			Property pAvatar_state = new Property();
-			pAvatar_state.name = "state";
-			pAvatar_state.properUtype = 7;
-			pAvatar_state.properFlags = 4;
-			pAvatar_state.aliasID = 9;
-			SByte Avatar_state_defval;
-			SByte.TryParse("0", out Avatar_state_defval);
-			pAvatar_state.defaultVal = Avatar_state_defval;
-			pAvatarModule.propertys["state"] = pAvatar_state; 
-
-			pAvatarModule.usePropertyDescrAlias = true;
-			pAvatarModule.idpropertys[(UInt16)pAvatar_state.aliasID] = pAvatar_state;
-
-			//Dbg.DEBUG_MSG("EntityDef::initScriptModules: add(Avatar), property(state / 7).");
 
 			List<DATATYPE_BASE> pAvatar_onEnterRoom_args = new List<DATATYPE_BASE>();
 			pAvatar_onEnterRoom_args.Add(EntityDef.id2datatypes[8]);
@@ -278,7 +263,7 @@ namespace KBEngine
 		{
 			{
 				UInt16 utype = 2;
-				string typeName = "BOOL";
+				string typeName = "CMD_TYPE";
 				string name = "UINT8";
 				DATATYPE_BASE val = null;
 				EntityDef.datatypes.TryGetValue(name, out val);
@@ -300,7 +285,7 @@ namespace KBEngine
 
 			{
 				UInt16 utype = 5;
-				string typeName = "FRAMEID";
+				string typeName = "SPACE_KEY";
 				string name = "UINT64";
 				DATATYPE_BASE val = null;
 				EntityDef.datatypes.TryGetValue(name, out val);
@@ -311,7 +296,7 @@ namespace KBEngine
 
 			{
 				UInt16 utype = 4;
-				string typeName = "SPACE_ID";
+				string typeName = "FRAMEID";
 				string name = "UINT32";
 				DATATYPE_BASE val = null;
 				EntityDef.datatypes.TryGetValue(name, out val);

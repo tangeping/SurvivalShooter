@@ -29,8 +29,6 @@ namespace KBEngine
 		public virtual void onMoveSpeedChanged(float oldValue) {}
 		public string name = "";
 		public virtual void onNameChanged(string oldValue) {}
-		public SByte state = 0;
-		public virtual void onStateChanged(SByte oldValue) {}
 
 		public abstract void onEnterRoom(Int32 arg1); 
 		public abstract void onLeaveRoom(Int32 arg1); 
@@ -195,7 +193,7 @@ namespace KBEngine
 						}
 
 						break;
-					case 8:
+					case 9:
 						Byte oldval_modelID = modelID;
 						modelID = stream.readUint8();
 
@@ -277,22 +275,6 @@ namespace KBEngine
 						break;
 					case 40002:
 						stream.readUint32();
-						break;
-					case 7:
-						SByte oldval_state = state;
-						state = stream.readInt8();
-
-						if(prop.isBase())
-						{
-							if(inited)
-								onStateChanged(oldval_state);
-						}
-						else
-						{
-							if(inWorld)
-								onStateChanged(oldval_state);
-						}
-
 						break;
 					default:
 						break;
@@ -448,27 +430,6 @@ namespace KBEngine
 					else
 					{
 						onPositionChanged(oldval_position);
-					}
-				}
-			}
-
-			SByte oldval_state = state;
-			Property prop_state = pdatas[9];
-			if(prop_state.isBase())
-			{
-				if(inited && !inWorld)
-					onStateChanged(oldval_state);
-			}
-			else
-			{
-				if(inWorld)
-				{
-					if(prop_state.isOwnerOnly() && !isPlayer())
-					{
-					}
-					else
-					{
-						onStateChanged(oldval_state);
 					}
 				}
 			}
