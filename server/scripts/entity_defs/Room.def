@@ -43,13 +43,7 @@
 			<Arg>		ENTITY_ID		</Arg>
 		</leaveRoom>
 
-		<onEnter>
-			<Arg>		ENTITYCALL		</Arg>
-		</onEnter>
 
-		<onLeave>
-			<Arg>		ENTITY_ID		</Arg>
-		</onLeave>
 	</BaseMethods>
 
 	<CellMethods>
@@ -65,14 +59,6 @@
 			<Arg>			ENTITYCALL				 </Arg>
 			<Arg>           ENTITY_DATA               </Arg>
 		</addFrame>
-
-		<onBroadFrameBegin>
-			<Arg>			ENTITYCALL				 </Arg>
-		</onBroadFrameBegin>
-
-		<onBroadFrameEnd>
-			<Arg>			ENTITYCALL				 </Arg>
-		</onBroadFrameEnd>
 
 	</CellMethods>
 

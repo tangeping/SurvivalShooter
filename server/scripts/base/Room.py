@@ -25,15 +25,17 @@ class Room(KBEngine.Entity):
 		defined method.
 		请求进入某个space中
 		"""
+		DEBUG_MSG('Room-base::enterRoom.%d entityID = %i.' % (self.id, entityCall.id))
+
 		entityCall.createCell(self.cell, self.roomKey)
-		self.onEnter(entityCall)
 
 	def leaveRoom(self, entityID):
 		"""
 		defined method.
 		某个玩家请求退出这个space
 		"""
-		self.onLeave(entityID)
+		DEBUG_MSG('Room-base::leaveRoom.%d entityID = %i.' % (self.id, entityCall.id))
+
 
 	def onTimer(self, tid, userArg):
 		"""
@@ -42,22 +44,6 @@ class Room(KBEngine.Entity):
 		"""
 		#DEBUG_MSG("%s::onTimer: %i, tid:%i, arg:%i" % (self.getScriptName(), self.id, tid, userArg))
 		pass
-
-	def onEnter(self, entityCall):
-		"""
-		defined method.
-		进入场景
-		"""
-		if self.cell is not None:
-			self.cell.onEnter(entityCall)
-
-	def onLeave(self, entityID):
-		"""
-		defined method.
-		离开场景
-		"""
-		if self.cell is not None:
-			self.cell.onLeave(entityID)
 
 	def onLoseCell(self):
 		"""

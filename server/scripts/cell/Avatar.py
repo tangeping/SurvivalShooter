@@ -122,7 +122,7 @@ class Avatar(KBEngine.Entity, EntityCommon):
 		"""
 		同步帧开始调用
 		"""
-		self.getCurrRoom().onBroadFrameBegin(self)
+#		self.getCurrRoom().onBroadFrameBegin(self)
 
 	def onUpdateEnd(self):
 		"""

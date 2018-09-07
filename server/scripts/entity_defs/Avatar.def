@@ -58,15 +58,6 @@
 	</Properties>
 
 	<ClientMethods>
-
-        <onEnterRoom>
-        <Arg>           ENTITY_ID               </Arg>
-        </onEnterRoom>
-
-        <onLeaveRoom>
-        <Arg>           ENTITY_ID               </Arg>
-        </onLeaveRoom>
-
         <onRspFrameMessage>
         <Arg>           FRAME_DATA               </Arg>
         </onRspFrameMessage>

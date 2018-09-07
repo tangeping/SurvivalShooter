@@ -9,8 +9,8 @@ from ENTITY_DATA import TEntityFrame
 from FRAME_DATA import TFrameData
 from FRAME_LIST import TFrameList
 
-TIMER_TYPE_DESTROY = 1
-TIMER_TYPE_BALANCE_MASS = 2
+
+TIMER_TYPE_ROOM_TICK = 2
 
 class Room(KBEngine.Entity):
 	"""
@@ -24,8 +24,6 @@ class Room(KBEngine.Entity):
 
 		self.avatars = {}
 
-		self.frameCompelete = False
-
 		self.frameBegin = False
 
 		# 告诉客户端加载地图
@@ -36,14 +34,7 @@ class Room(KBEngine.Entity):
 		# 让baseapp和cellapp都能够方便的访问到这个房间的entityCall
 		KBEngine.globalData["Room_%i" % self.spaceID] = self.base
 
-		# 设置房间必要的数据，客户端可以获取之后做一些显示和限制
-		KBEngine.setSpaceData(self.spaceID, "GAME_MAP_SIZE",  str(GameConfigs.GAME_MAP_SIZE))
-		KBEngine.setSpaceData(self.spaceID, "ROOM_MAX_PLAYER",  str(GameConfigs.ROOM_MAX_PLAYER))
-		KBEngine.setSpaceData(self.spaceID, "GAME_ROUND_TIME",  str(GameConfigs.GAME_ROUND_TIME))
-
-
-
-
+		self.addTimer(1,0.00001,TIMER_TYPE_ROOM_TICK)
 	#--------------------------------------------------------------------------------------------
 	#                              Callbacks
 	#--------------------------------------------------------------------------------------------
@@ -54,7 +45,9 @@ class Room(KBEngine.Entity):
 		@param id		: addTimer 的返回值ID
 		@param userArg	: addTimer 最后一个参数所给入的数据
 		"""
-		pass
+#		DEBUG_MSG("Room::onTimer %d " % userArg)
+		if userArg == TIMER_TYPE_ROOM_TICK and self.frameBegin:
+			self.onBroadFrameBegine()
 
 	def onDestroy(self):
 		"""
@@ -75,75 +68,28 @@ class Room(KBEngine.Entity):
 		defined method.
 		进入场景
 		"""
+		DEBUG_MSG('Room-cell::onEnter space[%d] entityID = %i.' % (self.spaceID, entityCall.id))
 		self.avatars[entityCall.id] = entityCall
-
-		self.broadEnterOther(entityCall)
-
-		self.broadEnterMe(entityCall)
-
-		DEBUG_MSG('Room::onEnter space[%d] entityID = %i.' % (self.spaceID, entityCall.id))
-
 
 	def onLeave(self, entityID):
 		"""
 		defined method.
 		离开场景
 		"""
-		if entityID in self.avatars:
-			if self.avatars[entityID] == GameConfigs.ENTITY_STATE_FREE:
-				self.onFrameCompelete()
-			del self.avatars[entityID]
-
-		self.broadLeaveOther(entityCall)
-
 		DEBUG_MSG('Room::onLeave space[%d] entityID = %i.' % (self.spaceID, entityID))
+		del self.avatars[entityID]
 
-
-	def broadEnterOther(self,entityCall):
-
-		DEBUG_MSG('Room::broadEnterOther is =%i,avatars = %s ' % (entityCall.id,str(self.avatars)))
-		if entityCall is None:
-			return
+	def broadMessage(self):
 
 		for e in self.avatars.values():
-			if e.id == entityCall.id:
+			if e is None or e.client is None:
 				continue
-			elif e.client is not None:
-				DEBUG_MSG('Room::broadEnterOther space[%d] entityID = %i.' % (self.spaceID, entityCall.id))
-				e.client.onEnterRoom(entityCall.id)
+			for frameid in range(e.frameId,self.roomFarmeId):
+				DEBUG_MSG('Room.py 88 line  frameid: %i,roomFarmeId: %i' % (e.frameId,self.roomFarmeId))
+				e.client.onRspFrameMessage(self.framePool[frameid+1])
+				pass
+			e.frameId = self.roomFarmeId
 
-	def broadEnterMe(self,entityCall):
-
-		DEBUG_MSG('Room::broadEnterMe is =%i,avatars = %s ' % (entityCall.id,str(self.avatars)))
-		if entityCall is None:
-			return
-
-		for e in self.avatars.values():
-#			if e.id == entityCall.id:
-#				continue
-			if e.client is not None:
-				DEBUG_MSG('Room::broadEnterMe space[%d] entityID = %i.' % (self.spaceID, e.id))
-				entityCall.client.onEnterRoom(e.id)
-
-	def broadLeaveOther(self,entityCall):
-
-		if entityCall is None:
-			return
-
-		for e in self.avatars.values():
-			if e.id == entityCall.id:
-				continue
-			elif e.client is not None:
-				e.client.onLeaveRoom(entityCall.id)
-
-
-	def broadMessage(self,frameMessage):
-
-		for e in self.avatars.values():
-			if e is None:
-				continue
-			elif e.client is not None:
-				e.client.onRspFrameMessage(frameMessage)
 
 	def addFrame(self,entityCall, framedata):
 		"""
@@ -155,61 +101,43 @@ class Room(KBEngine.Entity):
 		DEBUG_MSG("Room:: addFrame:%s" % (str(framedata)))
 
 		if len(self.currFrame) < 2 :
-			self.currFrame = TFrameData().createFromDict({"frameid":self.roomFarmeId,"operation":
-				[TEntityFrame().createFromDict({"entityid":framedata[0],"cmd_type":framedata[1],"datas":framedata[2]})]})
+			operation = TEntityFrame().createFromDict({"entityid":framedata[0],"cmd_type":framedata[1],"datas":framedata[2]})
+			self.currFrame = TFrameData().createFromDict({"frameid":self.roomFarmeId,"operation":[operation]})
+
 		else:
 			self.currFrame[1].append(framedata)
 
 		self.frameBegin = True
 
-	def onFrameCompelete(self):
-		"""
-		"""
-#		DEBUG_MSG("onFrameCompelete:: avatars:%s" % (str(self.avatars)))
 
-		for e in self.avatars.values():
-			if e.getState() != GameConfigs.ENTITY_STATE_SEND:
-				return;
+	def onBroadFrameBegine(self):
 
-		self.roomFarmeId += 1
-		self.framePool[self.roomFarmeId] = self.currFrame
-		self.currFrame.clear()
-
-		for e in self.avatars.values():
-			e.stateChange(GameConfigs.ENTITY_STATE_FREE)
-
-	def onBroadFrameBegin(self,entityCall):
-
-		if entityCall is None or entityCall.client is None or not self.frameBegin:
+		if not self.frameBegin:
 			return
-
-		if entityCall.frameId > self.roomFarmeId or entityCall.getState() == GameConfigs.ENTITY_STATE_SEND:
-			ERROR_MSG('Room::onBroadFrameBegin room[%d] entityID = %i,state= %i, frameId = %i , roomFarmeId = %i'
-				% (self.spaceID, entityCall.id,entityCall.getState(), entityCall.frameId,self.roomFarmeId))
-			return
-
-		entityCall.frameId = self.roomFarmeId
-
-		entityCall.stateChange(GameConfigs.ENTITY_STATE_SEND)
 
 		sendFrame = list()
 
 		if len(self.currFrame) >=2:
 			sendFrame = self.currFrame
 		else :
-			sendFrame = TFrameData().createFromDict({"frameid":self.roomFarmeId,
-				"operation":[TEntityFrame().createFromDict({"entityid":0,"cmd_type":0,"datas":b''})]})
+			operation = TEntityFrame().createFromDict({"entityid":0,"cmd_type":0,"datas":b''})
+			sendFrame = TFrameData().createFromDict({"frameid":self.roomFarmeId,"operation":[operation]})
 
-		entityCall.client.onRspFrameMessage(sendFrame)
+		self.framePool[self.roomFarmeId] = sendFrame
+
+		self.broadMessage()
 
 		DEBUG_MSG("Room::onBroadFrameBegin,currFrame:%s" % str(sendFrame))
 
-		self.onFrameCompelete()
+		self.onBroadFrameEnd()
 
-	def onBroadFrameEnd(self,entityCall):
+	def onBroadFrameEnd(self):
 		"""
+		define
 		"""
-		pass
+		self.roomFarmeId += 1
+		self.currFrame.clear()
+
 
 
 
