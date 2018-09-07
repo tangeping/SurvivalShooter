@@ -10,7 +10,8 @@ from FRAME_DATA import TFrameData
 from FRAME_LIST import TFrameList
 
 
-TIMER_TYPE_ROOM_TICK = 2
+TIMER_TYPE_ROOM_TICK = 1
+TIMER_TYPE_DESTORY = 2
 
 class Room(KBEngine.Entity):
 	"""
@@ -35,6 +36,9 @@ class Room(KBEngine.Entity):
 		KBEngine.globalData["Room_%i" % self.spaceID] = self.base
 
 		self.addTimer(1,0.00001,TIMER_TYPE_ROOM_TICK)
+		#self.addTimer(600,0,TIMER_TYPE_DESTORY)
+
+#		DEBUG_MSG("Room::__init__,currFrame:%s,len:%i" % (str(self.currFrame),len(self.currFrame)))
 	#--------------------------------------------------------------------------------------------
 	#                              Callbacks
 	#--------------------------------------------------------------------------------------------
@@ -48,6 +52,9 @@ class Room(KBEngine.Entity):
 #		DEBUG_MSG("Room::onTimer %d " % userArg)
 		if userArg == TIMER_TYPE_ROOM_TICK and self.frameBegin:
 			self.onBroadFrameBegine()
+
+		elif userArg == TIMER_TYPE_DESTORY:
+			self.destroySpace()
 
 	def onDestroy(self):
 		"""
@@ -85,9 +92,9 @@ class Room(KBEngine.Entity):
 			if e is None or e.client is None:
 				continue
 			for frameid in range(e.frameId,self.roomFarmeId):
-				DEBUG_MSG('Room.py 88 line  frameid: %i,roomFarmeId: %i' % (e.frameId,self.roomFarmeId))
+#				DEBUG_MSG('Room.py 88 line  : %s' % str(self.framePool[frameid+1]))
 				e.client.onRspFrameMessage(self.framePool[frameid+1])
-				pass
+				
 			e.frameId = self.roomFarmeId
 
 
@@ -95,18 +102,19 @@ class Room(KBEngine.Entity):
 		"""
 		添加数据帧
 		"""
+		
 		if entityCall is None :
 			return
 
-		DEBUG_MSG("Room:: addFrame:%s" % (str(framedata)))
+#		DEBUG_MSG("Room:: addFrame:%s" % (str(framedata)))
 
-		if len(self.currFrame) < 2 :
-			operation = TEntityFrame().createFromDict({"entityid":framedata[0],"cmd_type":framedata[1],"datas":framedata[2]})
+		operation = TEntityFrame().createFromDict({"entityid":framedata[0],"cmd_type":framedata[1],"datas":framedata[2]})
+
+		if len(self.currFrame) <= 0 or len(self.currFrame[1]) <= 0:			
 			self.currFrame = TFrameData().createFromDict({"frameid":self.roomFarmeId,"operation":[operation]})
-
 		else:
-			self.currFrame[1].append(framedata)
-
+			self.currFrame[1].append(operation)
+		
 		self.frameBegin = True
 
 
@@ -115,19 +123,25 @@ class Room(KBEngine.Entity):
 		if not self.frameBegin:
 			return
 
-		sendFrame = list()
+		self.roomFarmeId += 1
 
-		if len(self.currFrame) >=2:
-			sendFrame = self.currFrame
-		else :
+		sendFrame = TFrameData()
+
+#		DEBUG_MSG("Room::onBroadFrameBegin,currFrame:%s,len:%i" % (str(self.currFrame),len(self.currFrame)))
+
+		if len(self.currFrame) <= 0 or len(self.currFrame[1]) <= 0:
 			operation = TEntityFrame().createFromDict({"entityid":0,"cmd_type":0,"datas":b''})
-			sendFrame = TFrameData().createFromDict({"frameid":self.roomFarmeId,"operation":[operation]})
+			sendFrame = TFrameData().createFromDict({"frameid":self.roomFarmeId,"operation":[operation]})			
+		else :
+			sendFrame = self.currFrame
 
+#		DEBUG_MSG("--------------------framePool before :%s" % str(self.framePool))
 		self.framePool[self.roomFarmeId] = sendFrame
+#		DEBUG_MSG("--------------------framePool after :%s" % str(self.framePool))
 
 		self.broadMessage()
 
-		DEBUG_MSG("Room::onBroadFrameBegin,currFrame:%s" % str(sendFrame))
+#		DEBUG_MSG("Room::onBroadFrameBegin,sendFrame:%s" % str(sendFrame))
 
 		self.onBroadFrameEnd()
 
@@ -135,10 +149,9 @@ class Room(KBEngine.Entity):
 		"""
 		define
 		"""
-		self.roomFarmeId += 1
+#		DEBUG_MSG("Room::1111111111111111")
 		self.currFrame.clear()
-
-
+#		DEBUG_MSG("Room::22222222222222222")
 
 
 
