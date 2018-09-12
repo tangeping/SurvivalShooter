@@ -187,9 +187,10 @@ public class World : MonoBehaviour
         if (entity.renderObj == null)
             return;
 
-        //        Debug.Log("----------onRecieveFrame tick : " + DateTime.Now.TimeOfDay.ToString());
+         Debug.Log("world::frameid:"+ frameMsg.frameid +",----------onRecieveFrame tick : " + DateTime.Now.TimeOfDay.ToString());
 
          CBGlobalEventDispatcher.Instance.TriggerEvent((int)EVENT_ID.EVENT_FRAME_TICK, frameMsg);
+
 
 //         for (int i = 0; i < frameMsg.operation.Count; i++)
 //         {

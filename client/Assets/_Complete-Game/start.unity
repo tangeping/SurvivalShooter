@@ -291,7 +291,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   debugLevel: 0
   isMultiThreads: 0
-  ip: 47.98.235.97
+  ip: 127.0.0.1
   port: 20013
   clientType: 7
   syncPlayerMS: 33

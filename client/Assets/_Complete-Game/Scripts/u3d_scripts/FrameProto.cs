@@ -96,11 +96,13 @@ namespace Frame
     public class FrameUser:FrameBase
     {
         public Vector3 movement = Vector3.zero;
+        public double d_point = 0.0;
 
-        public FrameUser(CMD cmd, Vector3 p)
+        public FrameUser(CMD cmd, Vector3 p,double d)
         {
             e.cmd_type = (Byte)cmd;
             movement = p;
+            d_point = d;
         }
 
         public FrameUser()
@@ -110,6 +112,7 @@ namespace Frame
         public override ENTITY_DATA Serialize()
         {
             s.writeVector3(movement);
+            s.writeDouble(d_point);
             e.datas = new byte[s.wpos];
             Array.Copy(s.data(), e.datas, s.wpos);
             return e;
@@ -120,6 +123,7 @@ namespace Frame
             this.e = e;
             s.setBuffer(e.datas);
             movement = s.readVector3();
+            d_point = s.readDouble();
         }
     }
 

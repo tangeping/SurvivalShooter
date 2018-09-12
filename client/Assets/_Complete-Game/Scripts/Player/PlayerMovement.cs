@@ -79,8 +79,9 @@ namespace CompleteProject
             {
 //                Debug.Log("PlayerMovement::Movement:" + Movement);
                 Movement = cacheMove;
+                
 
-                KBEngine.Event.fireIn("reqFrameChange", FrameProto.encode(new FrameUser(Frame.CMD.USER,Movement)));
+                KBEngine.Event.fireIn("reqFrameChange", FrameProto.encode(new FrameUser(Frame.CMD.USER,Movement,3.141592653)));
 //                startTime = System.DateTime.Now;
             }
 

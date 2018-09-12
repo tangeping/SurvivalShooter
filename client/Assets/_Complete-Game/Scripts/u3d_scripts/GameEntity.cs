@@ -15,6 +15,8 @@ public class GameEntity : MonoBehaviour {
     public  KBEngine.Entity entity;
 
     //----------------------------
+    private UInt32 readFramePos = 0;
+
     public static float playTime = 1 / 30.0f; // 33 s
     private float FrameDuration = 0f;
     private Vector3 destPosition = Vector3.zero;
@@ -87,18 +89,46 @@ public class GameEntity : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
-        CBGlobalEventDispatcher.Instance.AddEventListener<FRAME_DATA>((int)EVENT_ID.EVENT_FRAME_TICK, onUpdateTick);
+ //       CBGlobalEventDispatcher.Instance.AddEventListener<FRAME_DATA>((int)EVENT_ID.EVENT_FRAME_TICK, onUpdateTick);
+        Debug.LogError("GameEntity.start." + transform.name);
+    }
+
+    void OnGUI()
+    {
+        if (Camera.main == null || transform.name == "")
+            return;
+
+        //根据NPC头顶的3D坐标换算成它在2D屏幕中的坐标     
+        Vector2 uiposition = Camera.main.WorldToScreenPoint(transform.position);
+
+        //得到真实NPC头顶的2D坐标
+        uiposition = new Vector2(uiposition.x, Screen.height - uiposition.y);
+
+        //计算NPC名称的宽高
+        Vector2 nameSize = GUI.skin.label.CalcSize(new GUIContent(transform.name));
+
+
+        GUIStyle fontStyle = new GUIStyle();
+        fontStyle.normal.background = null;             //设置背景填充  
+        fontStyle.normal.textColor = Color.yellow;      //设置字体颜色  
+        fontStyle.fontSize = (int)(15.0 * gameObject.transform.localScale.x);
+        fontStyle.alignment = TextAnchor.MiddleCenter;
+
+        //绘制NPC名称
+        GUI.Label(new Rect(uiposition.x - (nameSize.x / 4), uiposition.y - nameSize.y*4, nameSize.x, nameSize.y), transform.name, fontStyle);
     }
 
     public void onUpdateTick(FRAME_DATA frameMsg)
     {
         curreFrameId = frameMsg.frameid;
+        Debug.Log("id:"+ entity.id +",frameid:" + frameMsg.frameid + ",----------onRecieveFrame tick : " + DateTime.Now.TimeOfDay.ToString());
 
         bool isEmptyFrame = true;
 
         for (int i = 0; i < frameMsg.operation.Count; i++)
         {
             var oper = frameMsg.operation[i];
+            Debug.Log("operation id:" + oper.entityid);
 
             if (oper.entityid != entity.id)
             {
@@ -121,16 +151,29 @@ public class GameEntity : MonoBehaviour {
 
     }
 
+    void onReadFrame()
+    {
+//        Debug.LogError("id:" + entity.id + ",readFramePos:" + readFramePos + ",frame_list.Count:" + PlayerData.Instance.frame_list.Count);
+        while(readFramePos < PlayerData.Instance.frame_list.Count)
+        {
+            ++readFramePos;
+
+            var frameData = PlayerData.Instance.frame_list[readFramePos];
+            onUpdateTick(frameData);
+        }
+    }
+
     // Update is called once per frame
     void Update () {
+
+        onReadFrame();
+
 
         if (!isAvatar)
             return;
 
         float dis = Vector3.Distance(transform.position, destPosition);
         float currSpeed = DestDuration <=0 ? Speed : (Speed * playTime / DestDuration);
-
-       // Debug.Log("CurrSpeed:"+currSpeed + ",destDuration:"+ DestDuration);
 
         if(dis <= currSpeed * Time.deltaTime)
         {
@@ -152,30 +195,22 @@ public class GameEntity : MonoBehaviour {
         {
             transform.position = destPosition;
 
-//            float dis2 = Vector3.Distance(transform.position, destPosition);
-
-
- //            Debug.Log("diff distance---------->:" + dis2.ToString("f6"));
-
             if (framePool.Count > 0)
-            {
-                Vector3 movement = Vector3.zero;
-
+            {   
                 DestDuration = playTime / (  framePool.Count <= ThresholdFrame ? 1: framePool.Count/ ThresholdFrame);
 
-
-                //DestDuration = playTime -  framePool.Count / thresholdFrame * 0.01f;//10ms快播
-
-                if(framePool.Count > 8)
-                    Debug.LogError("framePool.Count too big:" + +framePool.Count);
+//                 if(framePool.Count > 8)
+//                     Debug.LogError("framePool.Count too big:" + +framePool.Count);
 
                 var framedata = framePool.Dequeue();
 
                 emptyFramesTime = 0.0f;
  //               ThresholdFrame -= 1;
 
-                Debug.Log("frame.id:"+ framedata.Key + " framePool.Count" + framePool.Count );
+ //               Debug.Log("frame.id:"+ framedata.Key + " framePool.Count" + framePool.Count );
 
+                Vector3 movement = Vector3.zero;
+                double point = 0.0;
                 foreach (var item in framedata.Value.operation)
                 {
                     if (item.cmd_type != (UInt32)CMD.USER)
@@ -185,7 +220,9 @@ public class GameEntity : MonoBehaviour {
 
                     FrameUser msg = FrameProto.decode(item) as FrameUser;
                     movement = msg.movement;
+                    point = msg.d_point;
                 }
+ //               Debug.Log("d_point:" + point);
 
                 destPosition += Speed * movement * playTime;
 
@@ -193,7 +230,7 @@ public class GameEntity : MonoBehaviour {
             }
             else if(lastFrameData != null)
             {
-                Debug.Log("emptyFramesTime," + emptyFramesTime);
+//                Debug.Log("emptyFramesTime," + emptyFramesTime);
 
                 emptyFramesTime += Time.deltaTime;
 
@@ -201,7 +238,7 @@ public class GameEntity : MonoBehaviour {
                 {
 //                    ThresholdFrame = (int)(emptyFramesTime / playTime);
 
-                    Debug.LogError("one frame time out,emptyFramesTime:" + emptyFramesTime + ",ThresholdFrame:"+ ThresholdFrame);
+ //                   Debug.LogError("one frame time out,emptyFramesTime:" + emptyFramesTime + ",ThresholdFrame:"+ ThresholdFrame);
                 }
             }
         }

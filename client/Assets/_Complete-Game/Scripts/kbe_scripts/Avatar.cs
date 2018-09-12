@@ -89,7 +89,8 @@ namespace KBEngine
 
         public override void onRspFrameMessage(FRAME_DATA framedata)
         {
-            Event.fireOut("onRecieveFrame", new object[] { this, framedata });
+ //           Event.fireOut("onRecieveFrame", new object[] { this, framedata });
+            PlayerData.Instance.frame_list[framedata.frameid] = framedata;
 //            Debug.Log("--onRspFrameMessage tick : " + DateTime.Now.ToString() + ":" + DateTime.Now.Millisecond.ToString() + ",frameid:"+ framedata.frameid);
         }
 
