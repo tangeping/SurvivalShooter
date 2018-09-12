@@ -4,6 +4,7 @@ from KBEDebug import *
 import GameConfigs
 import random
 import GameUtils
+import copy
 
 from ENTITY_DATA import TEntityFrame
 from FRAME_DATA import TFrameData
@@ -27,6 +28,14 @@ class Room(KBEngine.Entity):
 
 		self.frameBegin = False
 
+		self.roomFarmeId = 1
+
+		operation = TEntityFrame().createFromDict({"entityid":0,"cmd_type":0,"datas":b''})
+
+		self.emptyFrame = TFrameData().createFromDict({"frameid":0,"operation":[operation]})
+		self.currFrame = copy.deepcopy(self.emptyFrame)
+
+
 		# 告诉客户端加载地图
 		KBEngine.addSpaceGeometryMapping(self.spaceID, None, "spaces/gameMap")
 
@@ -36,7 +45,7 @@ class Room(KBEngine.Entity):
 		KBEngine.globalData["Room_%i" % self.spaceID] = self.base
 
 		self.addTimer(1,0.00001,TIMER_TYPE_ROOM_TICK)
-		#self.addTimer(600,0,TIMER_TYPE_DESTORY)
+		self.addTimer(600,0,TIMER_TYPE_DESTORY)
 
 #		DEBUG_MSG("Room::__init__,currFrame:%s,len:%i" % (str(self.currFrame),len(self.currFrame)))
 	#--------------------------------------------------------------------------------------------
@@ -54,7 +63,7 @@ class Room(KBEngine.Entity):
 			self.onBroadFrameBegine()
 
 		elif userArg == TIMER_TYPE_DESTORY:
-			self.destroySpace()
+			self.onDestroyTimer()
 
 	def onDestroy(self):
 		"""
@@ -62,7 +71,6 @@ class Room(KBEngine.Entity):
 		"""
 		DEBUG_MSG("Room::onDestroy: %i" % (self.id))
 		del KBEngine.globalData["Room_%i" % self.spaceID]
-
 
 	def onDestroyTimer(self):
 		DEBUG_MSG("Room::onDestroyTimer: %i" % (self.id))
@@ -106,15 +114,21 @@ class Room(KBEngine.Entity):
 		if entityCall is None :
 			return
 
-#		DEBUG_MSG("Room:: addFrame:%s" % (str(framedata)))
-
+		
+		#DEBUG_MSG("Room:: addFrame:%s" % (str(framedata)))
+		
 		operation = TEntityFrame().createFromDict({"entityid":framedata[0],"cmd_type":framedata[1],"datas":framedata[2]})
 
-		if len(self.currFrame) <= 0 or len(self.currFrame[1]) <= 0:			
-			self.currFrame = TFrameData().createFromDict({"frameid":self.roomFarmeId,"operation":[operation]})
+#		DEBUG_MSG("Room:: addFrame:before self.currFrame : %s" % (str(self.currFrame)))
+
+		if self.currFrame[0] <= 0:
+		#if len(self.currFrame) <= 0 or len(self.currFrame[1]) <= 0:			
+			self.currFrame[1] = [operation]
 		else:
 			self.currFrame[1].append(operation)
 		
+#		DEBUG_MSG("Room:: addFrame:after self.currFrame : %s" % (str(self.currFrame)))
+
 		self.frameBegin = True
 
 
@@ -123,35 +137,24 @@ class Room(KBEngine.Entity):
 		if not self.frameBegin:
 			return
 
-		self.roomFarmeId += 1
-
-		sendFrame = TFrameData()
-
-#		DEBUG_MSG("Room::onBroadFrameBegin,currFrame:%s,len:%i" % (str(self.currFrame),len(self.currFrame)))
-
-		if len(self.currFrame) <= 0 or len(self.currFrame[1]) <= 0:
-			operation = TEntityFrame().createFromDict({"entityid":0,"cmd_type":0,"datas":b''})
-			sendFrame = TFrameData().createFromDict({"frameid":self.roomFarmeId,"operation":[operation]})			
-		else :
-			sendFrame = self.currFrame
-
-#		DEBUG_MSG("--------------------framePool before :%s" % str(self.framePool))
-		self.framePool[self.roomFarmeId] = sendFrame
-#		DEBUG_MSG("--------------------framePool after :%s" % str(self.framePool))
-
+		self.currFrame[0] = self.roomFarmeId
+		self.framePool[self.roomFarmeId] = self.currFrame
 		self.broadMessage()
 
-#		DEBUG_MSG("Room::onBroadFrameBegin,sendFrame:%s" % str(sendFrame))
+		DEBUG_MSG("Room::onBroadFrameBegine,currFrame:%s" % str(self.currFrame))
 
 		self.onBroadFrameEnd()
+
 
 	def onBroadFrameEnd(self):
 		"""
 		define
-		"""
+		"""		
 #		DEBUG_MSG("Room::1111111111111111")
-		self.currFrame.clear()
-#		DEBUG_MSG("Room::22222222222222222")
+		self.roomFarmeId += 1
+		self.currFrame = copy.deepcopy(self.emptyFrame)
+#		DEBUG_MSG("Room::22222222222222222,self.currFrame:%s" % str(self.currFrame))
+		
 
 
 

@@ -268,7 +268,7 @@
     <Compile Include="Assets\_Complete-Game\Scripts\u3d_scripts\FrameProto.cs" />
     <Compile Include="Assets\_Complete-Game\Scripts\u3d_scripts\GameEntity.cs" />
     <Compile Include="Assets\_Complete-Game\Scripts\u3d_scripts\PlayerData.cs" />
-    <Compile Include="Assets\_Complete-Game\Scripts\u3d_scripts\Room.cs" />
+    <Compile Include="Assets\_Complete-Game\Scripts\u3d_scripts\ShowFPS.cs" />
     <Compile Include="Assets\_Complete-Game\Scripts\u3d_scripts\UI.cs" />
     <Compile Include="Assets\_Complete-Game\Scripts\u3d_scripts\World.cs" />
     <Compile Include="Assets\_Complete-Game\Scripts\Utils\CBJsonUntity.cs" />
@@ -319,7 +319,6 @@
     <Compile Include="Assets\PostProcessing\Runtime\Utils\GraphicsUtils.cs" />
     <Compile Include="Assets\PostProcessing\Runtime\Utils\MaterialFactory.cs" />
     <Compile Include="Assets\PostProcessing\Runtime\Utils\RenderTextureFactory.cs" />
-    <Compile Include="Assets\Prefabs\ShowFPS.cs" />
     <Compile Include="Assets\Prefabs\test.cs" />
     <Compile Include="Assets\Prefabs\test2.cs" />
     <Compile Include="Assets\SampleScenes\Menu\Scripts\MenuSceneLoader.cs" />

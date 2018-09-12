@@ -196,50 +196,35 @@ namespace KBEngine
 
 			//Dbg.DEBUG_MSG("EntityDef::initScriptModules: add(Avatar), property(name / 2).");
 
-			List<DATATYPE_BASE> pAvatar_onEnterRoom_args = new List<DATATYPE_BASE>();
-			pAvatar_onEnterRoom_args.Add(EntityDef.id2datatypes[8]);
+			List<DATATYPE_BASE> pAvatar_onNetworkDelay_args = new List<DATATYPE_BASE>();
+			pAvatar_onNetworkDelay_args.Add(EntityDef.id2datatypes[8]);
 
-			Method pAvatar_onEnterRoom = new Method();
-			pAvatar_onEnterRoom.name = "onEnterRoom";
-			pAvatar_onEnterRoom.methodUtype = 3;
-			pAvatar_onEnterRoom.aliasID = 1;
-			pAvatar_onEnterRoom.args = pAvatar_onEnterRoom_args;
+			Method pAvatar_onNetworkDelay = new Method();
+			pAvatar_onNetworkDelay.name = "onNetworkDelay";
+			pAvatar_onNetworkDelay.methodUtype = 5;
+			pAvatar_onNetworkDelay.aliasID = 1;
+			pAvatar_onNetworkDelay.args = pAvatar_onNetworkDelay_args;
 
-			pAvatarModule.methods["onEnterRoom"] = pAvatar_onEnterRoom; 
+			pAvatarModule.methods["onNetworkDelay"] = pAvatar_onNetworkDelay; 
 			pAvatarModule.useMethodDescrAlias = true;
-			pAvatarModule.idmethods[(UInt16)pAvatar_onEnterRoom.aliasID] = pAvatar_onEnterRoom;
+			pAvatarModule.idmethods[(UInt16)pAvatar_onNetworkDelay.aliasID] = pAvatar_onNetworkDelay;
 
-			//Dbg.DEBUG_MSG("EntityDef::initScriptModules: add(Avatar), method(onEnterRoom / 3).");
-
-			List<DATATYPE_BASE> pAvatar_onLeaveRoom_args = new List<DATATYPE_BASE>();
-			pAvatar_onLeaveRoom_args.Add(EntityDef.id2datatypes[8]);
-
-			Method pAvatar_onLeaveRoom = new Method();
-			pAvatar_onLeaveRoom.name = "onLeaveRoom";
-			pAvatar_onLeaveRoom.methodUtype = 4;
-			pAvatar_onLeaveRoom.aliasID = 2;
-			pAvatar_onLeaveRoom.args = pAvatar_onLeaveRoom_args;
-
-			pAvatarModule.methods["onLeaveRoom"] = pAvatar_onLeaveRoom; 
-			pAvatarModule.useMethodDescrAlias = true;
-			pAvatarModule.idmethods[(UInt16)pAvatar_onLeaveRoom.aliasID] = pAvatar_onLeaveRoom;
-
-			//Dbg.DEBUG_MSG("EntityDef::initScriptModules: add(Avatar), method(onLeaveRoom / 4).");
+			//Dbg.DEBUG_MSG("EntityDef::initScriptModules: add(Avatar), method(onNetworkDelay / 5).");
 
 			List<DATATYPE_BASE> pAvatar_onRspFrameMessage_args = new List<DATATYPE_BASE>();
 			pAvatar_onRspFrameMessage_args.Add(EntityDef.id2datatypes[23]);
 
 			Method pAvatar_onRspFrameMessage = new Method();
 			pAvatar_onRspFrameMessage.name = "onRspFrameMessage";
-			pAvatar_onRspFrameMessage.methodUtype = 5;
-			pAvatar_onRspFrameMessage.aliasID = 3;
+			pAvatar_onRspFrameMessage.methodUtype = 4;
+			pAvatar_onRspFrameMessage.aliasID = 2;
 			pAvatar_onRspFrameMessage.args = pAvatar_onRspFrameMessage_args;
 
 			pAvatarModule.methods["onRspFrameMessage"] = pAvatar_onRspFrameMessage; 
 			pAvatarModule.useMethodDescrAlias = true;
 			pAvatarModule.idmethods[(UInt16)pAvatar_onRspFrameMessage.aliasID] = pAvatar_onRspFrameMessage;
 
-			//Dbg.DEBUG_MSG("EntityDef::initScriptModules: add(Avatar), method(onRspFrameMessage / 5).");
+			//Dbg.DEBUG_MSG("EntityDef::initScriptModules: add(Avatar), method(onRspFrameMessage / 4).");
 
 			List<DATATYPE_BASE> pAvatar_reqFrameChange_args = new List<DATATYPE_BASE>();
 			pAvatar_reqFrameChange_args.Add(EntityDef.id2datatypes[22]);
@@ -256,6 +241,22 @@ namespace KBEngine
 			pAvatarModule.idcell_methods[pAvatar_reqFrameChange.methodUtype] = pAvatar_reqFrameChange;
 
 			//Dbg.DEBUG_MSG("EntityDef::initScriptModules: add(Avatar), method(reqFrameChange / 1).");
+
+			List<DATATYPE_BASE> pAvatar_reqNetworkDelay_args = new List<DATATYPE_BASE>();
+			pAvatar_reqNetworkDelay_args.Add(EntityDef.id2datatypes[8]);
+
+			Method pAvatar_reqNetworkDelay = new Method();
+			pAvatar_reqNetworkDelay.name = "reqNetworkDelay";
+			pAvatar_reqNetworkDelay.methodUtype = 2;
+			pAvatar_reqNetworkDelay.aliasID = -1;
+			pAvatar_reqNetworkDelay.args = pAvatar_reqNetworkDelay_args;
+
+			pAvatarModule.methods["reqNetworkDelay"] = pAvatar_reqNetworkDelay; 
+			pAvatarModule.cell_methods["reqNetworkDelay"] = pAvatar_reqNetworkDelay;
+
+			pAvatarModule.idcell_methods[pAvatar_reqNetworkDelay.methodUtype] = pAvatar_reqNetworkDelay;
+
+			//Dbg.DEBUG_MSG("EntityDef::initScriptModules: add(Avatar), method(reqNetworkDelay / 2).");
 
 		}
 
@@ -438,7 +439,7 @@ namespace KBEngine
 			}
 
 			{
-				UInt16 utype = 10;
+				UInt16 utype = 20;
 				string typeName = "ENTITYCALL";
 				string name = "ENTITYCALL";
 				DATATYPE_BASE val = null;

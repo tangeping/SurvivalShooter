@@ -16,11 +16,6 @@
 			<Flags>			CELL_PUBLIC			</Flags>
 		</roomFarmeId>
 
-		<currFrame>
-			<Type>			FRAME_DATA			</Type>
-			<Flags>			CELL_PUBLIC			</Flags>
-		</currFrame>
-
 		<framePool>
 			<Type>			FRAME_LIST			</Type>
 			<Flags>			CELL_PUBLIC			</Flags>

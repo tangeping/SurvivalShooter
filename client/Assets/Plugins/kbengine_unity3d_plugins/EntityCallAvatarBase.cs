@@ -41,5 +41,15 @@ namespace KBEngine
 			sendCall(null);
 		}
 
+		public void reqNetworkDelay(Int32 arg1)
+		{
+			Bundle pBundle = newCall("reqNetworkDelay", 0);
+			if(pBundle == null)
+				return;
+
+			bundle.writeInt32(arg1);
+			sendCall(null);
+		}
+
 	}
 	}

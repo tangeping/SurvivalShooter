@@ -62,6 +62,10 @@
         <Arg>           FRAME_DATA               </Arg>
         </onRspFrameMessage>
 
+        <onNetworkDelay>
+        <Arg>           INT32               </Arg>
+        </onNetworkDelay>
+        
 	</ClientMethods>
 
 	<BaseMethods>
@@ -76,6 +80,10 @@
             <Arg>       ENTITY_DATA      </Arg>
         </reqFrameChange>
 
+		<reqNetworkDelay>
+            <Exposed/>
+            <Arg>       INT32      </Arg>
+        </reqNetworkDelay>
 
 	</CellMethods>
 

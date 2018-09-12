@@ -19,8 +19,9 @@ public class GameEntity : MonoBehaviour {
     private float FrameDuration = 0f;
     private Vector3 destPosition = Vector3.zero;
     private float destDuration = 0.0f;
-    private int thresholdFrame = 4;
-
+    private int thresholdFrame = 1;
+    public float emptyFramesTime = 0f;
+    public int thresholdMaxFrame = 30;
 
     private float Speed = 10.0f;
     //----------------------------
@@ -32,7 +33,7 @@ public class GameEntity : MonoBehaviour {
 
     public Queue<KeyValuePair<UInt32, FrameData>> framePool = new Queue<KeyValuePair<UInt32, FrameData>>();
 
-    public FrameData lastFrameDate = null;
+    public FrameData lastFrameData = null;
     private UInt32 curreFrameId = 0;
 
     public float DestDuration
@@ -45,6 +46,30 @@ public class GameEntity : MonoBehaviour {
         set
         {
             destDuration = value;
+        }
+    }
+
+    public int ThresholdFrame
+    {
+        get
+        {
+            return thresholdFrame;
+        }
+
+        set
+        {
+            if (value < 1)
+            {
+                thresholdFrame = 1;
+            }
+            else if (value > thresholdMaxFrame)
+            {
+                thresholdFrame = thresholdMaxFrame;
+            }
+            else
+            {
+                thresholdFrame = value;
+            }
         }
     }
 
@@ -86,12 +111,12 @@ public class GameEntity : MonoBehaviour {
             data.operation.Add(oper);
 
             framePool.Enqueue(new KeyValuePair<UInt32, FrameData>(curreFrameId, data));
-            lastFrameDate = data;
+            lastFrameData = data;
         }
 
-        if (isEmptyFrame && lastFrameDate != null)
+        if (isEmptyFrame && lastFrameData != null)
         {
-            framePool.Enqueue(new KeyValuePair<UInt32, FrameData>(curreFrameId, lastFrameDate));
+            framePool.Enqueue(new KeyValuePair<UInt32, FrameData>(curreFrameId, lastFrameData));
         }
 
     }
@@ -105,12 +130,12 @@ public class GameEntity : MonoBehaviour {
         float dis = Vector3.Distance(transform.position, destPosition);
         float currSpeed = DestDuration <=0 ? Speed : (Speed * playTime / DestDuration);
 
-        Debug.Log("CurrSpeed:"+currSpeed + ",destDuration:"+ DestDuration);
+       // Debug.Log("CurrSpeed:"+currSpeed + ",destDuration:"+ DestDuration);
 
         if(dis <= currSpeed * Time.deltaTime)
         {
             transform.position = destPosition;
-//            Debug.LogError("----------diss time------------------:" + (playTime - FrameDuration));
+//           Debug.LogError("----------diff time------------------:" + (playTime - FrameDuration));
         }
         else
         {
@@ -136,11 +161,20 @@ public class GameEntity : MonoBehaviour {
             {
                 Vector3 movement = Vector3.zero;
 
-                DestDuration = playTime / (  framePool.Count <= thresholdFrame ? 1: framePool.Count/ thresholdFrame);
+                DestDuration = playTime / (  framePool.Count <= ThresholdFrame ? 1: framePool.Count/ ThresholdFrame);
+
 
                 //DestDuration = playTime -  framePool.Count / thresholdFrame * 0.01f;//10ms快播
 
+                if(framePool.Count > 8)
+                    Debug.LogError("framePool.Count too big:" + +framePool.Count);
+
                 var framedata = framePool.Dequeue();
+
+                emptyFramesTime = 0.0f;
+ //               ThresholdFrame -= 1;
+
+                Debug.Log("frame.id:"+ framedata.Key + " framePool.Count" + framePool.Count );
 
                 foreach (var item in framedata.Value.operation)
                 {
@@ -156,6 +190,19 @@ public class GameEntity : MonoBehaviour {
                 destPosition += Speed * movement * playTime;
 
                 FrameDuration = 0.0f;
+            }
+            else if(lastFrameData != null)
+            {
+                Debug.Log("emptyFramesTime," + emptyFramesTime);
+
+                emptyFramesTime += Time.deltaTime;
+
+                if(emptyFramesTime >= playTime)
+                {
+//                    ThresholdFrame = (int)(emptyFramesTime / playTime);
+
+                    Debug.LogError("one frame time out,emptyFramesTime:" + emptyFramesTime + ",ThresholdFrame:"+ ThresholdFrame);
+                }
             }
         }
     }

@@ -20,7 +20,7 @@ public class KBEMain : MonoBehaviour
 	public KBEngineApp.CLIENT_TYPE clientType = KBEngineApp.CLIENT_TYPE.CLIENT_TYPE_MINI;
 	public int syncPlayerMS = 1000 / 30;
 
-	public int threadUpdateHZ = 30;
+	public int threadUpdateHZ = 30 * 2;
 	public int serverHeartbeatTick = 60 / 2;
 	public int TCP_SEND_BUFFER_MAX = (int)KBEngine.NetworkInterfaceBase.TCP_PACKET_MAX;
 	public int TCP_RECV_BUFFER_MAX = (int)KBEngine.NetworkInterfaceBase.TCP_PACKET_MAX;

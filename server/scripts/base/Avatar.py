@@ -124,4 +124,3 @@ class Avatar(KBEngine.Proxy):
 	def onDestroyTimer(self):
 		DEBUG_MSG("Avatar::onDestroyTimer: %i" % (self.id))
 		self.destroySelf()
-

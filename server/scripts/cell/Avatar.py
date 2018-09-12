@@ -131,8 +131,13 @@ class Avatar(KBEngine.Entity, EntityCommon):
 
 		pass
 
+	def reqNetworkDelay(self,exposed,context):
+		'''
+		测试网络延时
+		'''
+		
+		self.client.onNetworkDelay(context);
 
-#		self.allClients.updatePosition(self.getCurrRoom().frameId,position)
 
 
 

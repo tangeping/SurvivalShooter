@@ -113,8 +113,11 @@
 			}
 
 			nextTickKcpUpdate = 0;
-			return kcp_.Send(stream.data(), stream.rpos, (int)stream.length()) >= 0;
-		}
+			bool xxx = kcp_.Send(stream.data(), stream.rpos, (int)stream.length()) >= 0;
+            kcp_.Flush();
+            return xxx;
+
+        }
 
 		public override void process()
 		{

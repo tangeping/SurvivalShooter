@@ -34,6 +34,7 @@
 		private MessageLengthEx expectSize = 2;
 		private READ_STATE state = READ_STATE.READ_STATE_MSGID;
 		private MemoryStream stream = new MemoryStream();
+        private System.DateTime ReadTime;
 		
 		public MessageReaderTCP()
 		{
@@ -68,9 +69,9 @@
 							// 如果是0个参数的消息，那么没有后续内容可读了，处理本条消息并且直接跳到下一条消息
 							#if UNITY_EDITOR
 							Dbg.profileStart(msg.name);
-							#endif
-
-							msg.handleMessage(stream);
+#endif
+ //                           Debug.Log("handleMessage1 Time:" + System.DateTime.Now + "." + DateTime.Now.Millisecond);
+                            msg.handleMessage(stream);
 
 							#if UNITY_EDITOR
 							Dbg.profileEnd(msg.name);
@@ -160,7 +161,7 @@
 #if UNITY_EDITOR
 						Dbg.profileStart(msg.name);
 #endif
-
+ //                       Debug.Log("handleMessage2 Time:" + System.DateTime.Now + "." + DateTime.Now.Millisecond);
 						msg.handleMessage(stream);
 #if UNITY_EDITOR
 						Dbg.profileEnd(msg.name);

@@ -19,6 +19,7 @@ namespace KBEngine
             {
                 Event.registerIn("relive", this, "relive");
                 Event.registerIn("reqFrameChange", this, "reqFrameChange");
+                Event.registerIn("reqNetworkDelay", this, "reqNetworkDelay");
 
                 // 触发登陆成功事件
                 Event.fireOut("onLoginSuccessfully", new object[] { KBEngineApp.app.entity_uuid, id, this });
@@ -86,33 +87,20 @@ namespace KBEngine
             Event.fireOut("set_modelScale", new object[] { this, this.modelScale });
         }
 
-        public override void onEnterRoom(Int32 entityid)
-        {
-            KBEngine.Entity other = KBEngineApp.app.findEntity(entityid);
-            if(other == null)
-            {
-                return;
-            }
-            Event.fireOut("onEnterRoom", new object[] { this, other });
-        }
-
-        public override void onLeaveRoom(Int32 entityid)
-        {
-            KBEngine.Entity other = KBEngineApp.app.findEntity(entityid);
-            if (other == null)
-            {
-                return;
-            }
-            Event.fireOut("onEnterRoom", new object[] { this, other });
-        }
-
         public override void onRspFrameMessage(FRAME_DATA framedata)
         {
             Event.fireOut("onRecieveFrame", new object[] { this, framedata });
- //           Debug.Log("--onRspFrameMessage tick : " + DateTime.Now.ToString() + ":" + DateTime.Now.Millisecond.ToString() + ",frameid:"+ framedata.frameid);
+//            Debug.Log("--onRspFrameMessage tick : " + DateTime.Now.ToString() + ":" + DateTime.Now.Millisecond.ToString() + ",frameid:"+ framedata.frameid);
         }
 
+        public void reqNetworkDelay(int arg)
+        {
+            cellEntityCall.reqNetworkDelay(arg);
+        }
 
-
+        public override void onNetworkDelay(int arg)
+        {
+            Event.fireOut("onNetworkDelay", new object[] { this, arg });
+        }
     }
 }

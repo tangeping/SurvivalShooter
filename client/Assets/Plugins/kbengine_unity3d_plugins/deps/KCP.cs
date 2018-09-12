@@ -771,7 +771,7 @@ namespace Deps
         }
 
         // flush pending data
-        void Flush()
+       public void Flush()
         {
             int change = 0;
             int lost = 0;

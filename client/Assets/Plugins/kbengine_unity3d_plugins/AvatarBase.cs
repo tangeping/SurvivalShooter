@@ -30,8 +30,7 @@ namespace KBEngine
 		public string name = "";
 		public virtual void onNameChanged(string oldValue) {}
 
-		public abstract void onEnterRoom(Int32 arg1); 
-		public abstract void onLeaveRoom(Int32 arg1); 
+		public abstract void onNetworkDelay(Int32 arg1); 
 		public abstract void onRspFrameMessage(FRAME_DATA arg1); 
 
 		public AvatarBase()
@@ -101,15 +100,11 @@ namespace KBEngine
 
 			switch(method.methodUtype)
 			{
-				case 3:
-					Int32 onEnterRoom_arg1 = stream.readInt32();
-					onEnterRoom(onEnterRoom_arg1);
+				case 5:
+					Int32 onNetworkDelay_arg1 = stream.readInt32();
+					onNetworkDelay(onNetworkDelay_arg1);
 					break;
 				case 4:
-					Int32 onLeaveRoom_arg1 = stream.readInt32();
-					onLeaveRoom(onLeaveRoom_arg1);
-					break;
-				case 5:
 					FRAME_DATA onRspFrameMessage_arg1 = ((DATATYPE_FRAME_DATA)method.args[0]).createFromStreamEx(stream);
 					onRspFrameMessage(onRspFrameMessage_arg1);
 					break;
