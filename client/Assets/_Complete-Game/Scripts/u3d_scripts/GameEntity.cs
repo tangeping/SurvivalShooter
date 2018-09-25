@@ -1,7 +1,7 @@
 ﻿using CBFrame.Core;
 using CBFrame.Sys;
-using Frame;
 using KBEngine;
+using SyncFrame;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,22 +14,28 @@ public class GameEntity : MonoBehaviour {
     public bool entityEnabled = true;
     public  KBEngine.Entity entity;
 
+    //-----------test Float--------
+    public double d_recieve = 0;
+    public FP fp_recieve;
+
     //----------------------------
     private UInt32 readFramePos = 0;
 
-    public static float playTime = 1 / 30.0f; // 33 s
-    private float FrameDuration = 0f;
-    private Vector3 destPosition = Vector3.zero;
-    private float destDuration = 0.0f;
+    public static FP playTime = 1 / 30.0f; // 33 s
+    private FP FrameDuration = 0f;
+    private TSVector destPosition = TSVector.zero;
+    private FP  destDuration = 0.0f;
     private int thresholdFrame = 1;
-    public float emptyFramesTime = 0f;
+    public FP emptyFramesTime = 0f;
     public int thresholdMaxFrame = 30;
 
-    private float Speed = 10.0f;
+    private FP Speed = 10.0f;
+    //-------------------------
+    private TSVector position;
     //----------------------------
     public class FrameData
     {
-        public float duration;
+        public FP duration;
         public List<ENTITY_DATA> operation = new List<ENTITY_DATA>();
     }
 
@@ -38,7 +44,7 @@ public class GameEntity : MonoBehaviour {
     public FrameData lastFrameData = null;
     private UInt32 curreFrameId = 0;
 
-    public float DestDuration
+    public FP DestDuration
     {
         get
         {
@@ -75,6 +81,20 @@ public class GameEntity : MonoBehaviour {
         }
     }
 
+    public TSVector Position
+    {
+        get
+        {
+            return position;
+        }
+
+        set
+        {
+            position = value;
+            transform.position = new Vector3(position.x.AsFloat(), position.y.AsFloat(), position.z.AsFloat());
+        }
+    }
+
     //----------------------------
     public void entityEnable()
     {
@@ -90,7 +110,7 @@ public class GameEntity : MonoBehaviour {
     void Start ()
     {
  //       CBGlobalEventDispatcher.Instance.AddEventListener<FRAME_DATA>((int)EVENT_ID.EVENT_FRAME_TICK, onUpdateTick);
-        Debug.LogError("GameEntity.start." + transform.name);
+ //       Debug.LogError("GameEntity.start." + transform.name);
     }
 
     void OnGUI()
@@ -116,19 +136,24 @@ public class GameEntity : MonoBehaviour {
 
         //绘制NPC名称
         GUI.Label(new Rect(uiposition.x - (nameSize.x / 4), uiposition.y - nameSize.y*4, nameSize.x, nameSize.y), transform.name, fontStyle);
+
+
+//         GUI.Label(new Rect(uiposition.x - (nameSize.x / 4), uiposition.y - nameSize.y * 4 -100, nameSize.x+100, nameSize.y+1000), "d:" + d_recieve.ToString("f15"));
+//         GUI.Label(new Rect(uiposition.x - (nameSize.x / 4), uiposition.y - nameSize.y * 4 - 80, nameSize.x + 100, nameSize.y + 1000), "fp:" + fp_recieve.AsDouble().ToString("f15"));
+
     }
 
     public void onUpdateTick(FRAME_DATA frameMsg)
     {
         curreFrameId = frameMsg.frameid;
-        Debug.Log("id:"+ entity.id +",frameid:" + frameMsg.frameid + ",----------onRecieveFrame tick : " + DateTime.Now.TimeOfDay.ToString());
+//        Debug.Log("id:"+ entity.id +",frameid:" + frameMsg.frameid + ",----------onRecieveFrame tick : " + DateTime.Now.TimeOfDay.ToString());
 
         bool isEmptyFrame = true;
 
         for (int i = 0; i < frameMsg.operation.Count; i++)
         {
             var oper = frameMsg.operation[i];
-            Debug.Log("operation id:" + oper.entityid);
+//            Debug.Log("operation id:" + oper.entityid);
 
             if (oper.entityid != entity.id)
             {
@@ -172,28 +197,28 @@ public class GameEntity : MonoBehaviour {
         if (!isAvatar)
             return;
 
-        float dis = Vector3.Distance(transform.position, destPosition);
-        float currSpeed = DestDuration <=0 ? Speed : (Speed * playTime / DestDuration);
+        FP dis = TSVector.Distance(Position, destPosition);
+        FP currSpeed = DestDuration <=0 ? Speed : (Speed * playTime / DestDuration);
 
         if(dis <= currSpeed * Time.deltaTime)
         {
-            transform.position = destPosition;
+            Position = destPosition;
 //           Debug.LogError("----------diff time------------------:" + (playTime - FrameDuration));
         }
         else
         {
-            Vector3 tempDirection = destPosition - transform.position;
+            TSVector tempDirection = destPosition - Position;
 
-            transform.position += tempDirection.normalized * currSpeed * Time.deltaTime;
+            Position += tempDirection.normalized * currSpeed * Time.deltaTime;
         }
-        
+
 
 
         FrameDuration += Time.deltaTime;
 
         if (FrameDuration >= DestDuration)
         {
-            transform.position = destPosition;
+            Position = destPosition;
 
             if (framePool.Count > 0)
             {   
@@ -209,8 +234,8 @@ public class GameEntity : MonoBehaviour {
 
  //               Debug.Log("frame.id:"+ framedata.Key + " framePool.Count" + framePool.Count );
 
-                Vector3 movement = Vector3.zero;
-                double point = 0.0;
+                TSVector movement = TSVector.zero;
+
                 foreach (var item in framedata.Value.operation)
                 {
                     if (item.cmd_type != (UInt32)CMD.USER)
@@ -220,7 +245,6 @@ public class GameEntity : MonoBehaviour {
 
                     FrameUser msg = FrameProto.decode(item) as FrameUser;
                     movement = msg.movement;
-                    point = msg.d_point;
                 }
  //               Debug.Log("d_point:" + point);
 

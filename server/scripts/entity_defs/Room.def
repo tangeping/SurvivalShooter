@@ -55,6 +55,12 @@
 			<Arg>           ENTITY_DATA               </Arg>
 		</addFrame>
 
+		<broadRawMessage>
+			<Arg>       INT32       </Arg>
+            <Arg>       DOUBLE      </Arg>
+            <Arg>       INT64       </Arg>
+		</broadRawMessage>
+
 	</CellMethods>
 
 </root>

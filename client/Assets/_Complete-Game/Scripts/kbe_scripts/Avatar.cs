@@ -5,9 +5,12 @@ namespace KBEngine
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
+    using SyncFrame;
 
     public class Avatar : AvatarBase
     {
+
+
         public Avatar()
         {
             
@@ -19,8 +22,7 @@ namespace KBEngine
             {
                 Event.registerIn("relive", this, "relive");
                 Event.registerIn("reqFrameChange", this, "reqFrameChange");
-                Event.registerIn("reqNetworkDelay", this, "reqNetworkDelay");
-
+   
                 // 触发登陆成功事件
                 Event.fireOut("onLoginSuccessfully", new object[] { KBEngineApp.app.entity_uuid, id, this });
             }
@@ -99,9 +101,9 @@ namespace KBEngine
             cellEntityCall.reqNetworkDelay(arg);
         }
 
-        public override void onNetworkDelay(int arg)
+        public override void onNetworkDelay(int arg1)
         {
-            Event.fireOut("onNetworkDelay", new object[] { this, arg });
+            Event.fireOut("onNetworkDelay", new object[] { this, arg1});
         }
     }
 }

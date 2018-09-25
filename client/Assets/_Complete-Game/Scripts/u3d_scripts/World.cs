@@ -8,6 +8,7 @@ using System.Linq;
 using CompleteProject;
 using CBFrame.Core;
 using CBFrame.Sys;
+using SyncFrame;
 
 public class World : MonoBehaviour
 {
@@ -54,6 +55,8 @@ public class World : MonoBehaviour
         KBEngine.Event.registerOut("onControlled", this, "onControlled");
         KBEngine.Event.registerOut("onSetSpaceData", this, "onSetSpaceData");
         KBEngine.Event.registerOut("onDelSpaceData", this, "onDelSpaceData");
+
+        
 
         // in world(register by scripts)
         KBEngine.Event.registerOut("onAvatarEnterWorld", this, "onAvatarEnterWorld");

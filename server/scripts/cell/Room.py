@@ -94,6 +94,17 @@ class Room(KBEngine.Entity):
 		DEBUG_MSG('Room::onLeave space[%d] entityID = %i.' % (self.spaceID, entityID))
 		del self.avatars[entityID]
 
+	def broadRawMessage(self,Icontex,Tdouble,Tfp):
+		'''
+		defined method
+		测试浮点数和定点数
+		'''
+		'''for e in self.avatars.values():
+			if e is None or e.client is None:
+				continue
+			e.client.onNetworkDelay(Icontex,Tdouble,Tfp)
+		'''
+
 	def broadMessage(self):
 
 		for e in self.avatars.values():

@@ -135,8 +135,12 @@ class Avatar(KBEngine.Entity, EntityCommon):
 		'''
 		测试网络延时
 		'''
+		if self.id != exposed:
+			return
 		
-		self.client.onNetworkDelay(context);
+		self.allClients.onNetworkDelay(context)
+
+		#self.getCurrRoom().broadRawMessage(context,d_pi,l_pi)
 
 
 

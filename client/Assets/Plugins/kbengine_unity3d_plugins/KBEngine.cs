@@ -82,7 +82,7 @@
 		public string serverScriptVersion = "";
 		public string clientScriptVersion = "0.1.0";
 		public string serverProtocolMD5 = "7425E4EF4B52ECA6F419E49C6998B15B";
-		public string serverEntitydefMD5 = "2BECCF7519F7EA50B8F6F2102EEE5B81";
+		public string serverEntitydefMD5 = "BDFD1A2A754CCD0F3D20910EAC515CE0";
 		
 		// 当前玩家的实体id与实体类别
 		public UInt64 entity_uuid = 0;
@@ -858,7 +858,6 @@
 			baseappIP = stream.readString();
 			baseappTcpPort = stream.readUint16();
 			baseappUdpPort = stream.readUint16();
-//            baseappUdpPort = 0;
 
 			Dbg.DEBUG_MSG("KBEngine::Client_onLoginSuccessfully: accountName(" + accountName + "), addr(" + 
 					baseappIP + ":" + baseappTcpPort + "|" + baseappUdpPort + "), datas(" + _serverdatas.Length + ")!");

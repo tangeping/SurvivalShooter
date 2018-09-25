@@ -2,6 +2,7 @@
 using System.Collections;
 using KBEngine;
 using System;
+using SyncFrame;
 
 public class ShowFPS : MonoBehaviour {
 
@@ -16,6 +17,8 @@ public class ShowFPS : MonoBehaviour {
     private int i_TimeDelay = 0;
 
     private float f_RTT;
+
+    const double d_pi = 1/3.0;
 
     public System.DateTime startTime;
 
@@ -40,9 +43,9 @@ public class ShowFPS : MonoBehaviour {
         GUI.Label(new Rect(Screen.width - 100, 1, 200, 200), f_RTT.ToString("f2"));
     }
 
-    public void onNetworkDelay(KBEngine.Entity entity,int arg)
+    public void onNetworkDelay(KBEngine.Entity entity, int arg1)
     {
-        if(arg == i_TimeDelay)
+        if(arg1 == i_TimeDelay)
         {
             f_RTT = (System.DateTime.Now - startTime).Milliseconds / 1.0f;
         }
@@ -52,10 +55,11 @@ public class ShowFPS : MonoBehaviour {
     {
         while(true)
         {
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(10.0f);
 
             ++i_TimeDelay;
             startTime = System.DateTime.Now;
+
             ((KBEngine.Avatar)KBEngineApp.getSingleton().player()).reqNetworkDelay(i_TimeDelay);
 
         }

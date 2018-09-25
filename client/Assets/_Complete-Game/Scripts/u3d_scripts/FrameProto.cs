@@ -3,31 +3,34 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using SyncFrame;
 
-namespace Frame
+namespace SyncFrame
 {
     public enum CMD
     {
         MOUSE = 1,
         KEYBOARD=2,
         USER = 3,
-        MAX =4,
+        TEST = 4,
+        MAX =255,
     }
 
     public abstract class FrameBase
     {
         public ENTITY_DATA e = new ENTITY_DATA();
-        public MemoryStream s = MemoryStream.createObject();
+        public FixedPointStream s = new FixedPointStream();
 
         public abstract ENTITY_DATA Serialize();
 
         public abstract void PareseFrom(ENTITY_DATA e);
     }
 
+
     public class FrameMouse : FrameBase
     {
-        public Vector3 point = Vector3.zero;
-        public FrameMouse(CMD cmd, Vector3 p)
+        public TSVector point = TSVector.zero;
+        public FrameMouse(CMD cmd, TSVector p)
         {
             e.cmd_type = (Byte)cmd;
             point = p;
@@ -39,7 +42,7 @@ namespace Frame
 
         public override ENTITY_DATA Serialize()
         {
-            s.writeVector3(point);
+            s.writeTSVector(point);
             e.datas = new byte[s.wpos];
             Array.Copy(s.data(),e.datas, s.wpos);
             return e;
@@ -49,7 +52,7 @@ namespace Frame
         {
             this.e = e;
             s.setBuffer(e.datas);
-            point = s.readVector3();
+            point = s.readTSVector();
         }
 
     }
@@ -93,26 +96,27 @@ namespace Frame
         }
     }
 
-    public class FrameUser:FrameBase
+    public class FrameTest:FrameBase
     {
-        public Vector3 movement = Vector3.zero;
-        public double d_point = 0.0;
+        public FP fp_1;
+        public FP fp_2;
 
-        public FrameUser(CMD cmd, Vector3 p,double d)
+
+        public FrameTest(CMD cmd, FP arg1,FP arg2)
         {
             e.cmd_type = (Byte)cmd;
-            movement = p;
-            d_point = d;
+            fp_1 = arg1;
+            fp_2 = arg2;
         }
 
-        public FrameUser()
+        public FrameTest()
         {
         }
 
         public override ENTITY_DATA Serialize()
         {
-            s.writeVector3(movement);
-            s.writeDouble(d_point);
+            s.writeFP(fp_1);
+            s.writeFP(fp_2);
             e.datas = new byte[s.wpos];
             Array.Copy(s.data(), e.datas, s.wpos);
             return e;
@@ -122,11 +126,41 @@ namespace Frame
         {
             this.e = e;
             s.setBuffer(e.datas);
-            movement = s.readVector3();
-            d_point = s.readDouble();
+            fp_1 = s.readFP();
+            fp_2 = s.readFP();
         }
     }
 
+    public class FrameUser : FrameBase
+    {
+        public TSVector movement = TSVector.zero;
+
+
+        public FrameUser(CMD cmd, TSVector p)
+        {
+            e.cmd_type = (Byte)cmd;
+            movement = p;
+        }
+
+        public FrameUser()
+        {
+        }
+
+        public override ENTITY_DATA Serialize()
+        {
+            s.writeTSVector(movement);
+            e.datas = new byte[s.wpos];
+            Array.Copy(s.data(), e.datas, s.wpos);
+            return e;
+        }
+
+        public override void PareseFrom(ENTITY_DATA e)
+        {
+            this.e = e;
+            s.setBuffer(e.datas);
+            movement = s.readTSVector();
+        }
+    }
 
     public class FrameProto
     {
@@ -154,6 +188,11 @@ namespace Frame
                 case CMD.USER:
                     {
                         f = new FrameUser();
+                    }
+                    break;
+                case CMD.TEST:
+                    {
+                        f = new FrameTest();
                     }
                     break;
                 default:
