@@ -13,14 +13,12 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile>
-    </CompilerResponseFile>
+    <CompilerResponseFile></CompilerResponseFile>
     <UnityProjectGenerator>VSTU</UnityProjectGenerator>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>Android:13</UnityBuildTarget>
     <UnityVersion>2017.4.3f1</UnityVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -287,7 +285,6 @@
     <Compile Include="Assets\_Complete-Game\Scripts\u3d_scripts\World.cs" />
     <Compile Include="Assets\_Complete-Game\Scripts\Utils\CBJsonUntity.cs" />
     <Compile Include="Assets\_Complete-Game\Scripts\Utils\CBMonoSingleton.cs" />
-    <Compile Include="Assets\_Complete-Game\Scripts\Utils\CBSingleton.cs" />
     <Compile Include="Assets\_Complete-Game\Scripts\Utils\Logger.cs" />
     <Compile Include="Assets\PostProcessing\Runtime\Attributes\GetSetAttribute.cs" />
     <Compile Include="Assets\PostProcessing\Runtime\Attributes\MinAttribute.cs" />
@@ -348,6 +345,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Fonts\LuckiestGuy\LICENSE.txt" />
+    <None Include="Assets\Plugins\kbengine_frame_plugins\Physics\Farseer\license.txt" />
+    <None Include="Assets\Plugins\kbengine_frame_plugins\Physics\Jitter\license.txt" />
+    <None Include="Assets\Plugins\kbengine_frame_plugins\Physics\readme.txt" />
     <None Include="Assets\PostProcessing\Editor Resources\Monitors\HistogramCompute.compute" />
     <None Include="Assets\PostProcessing\Editor Resources\Monitors\HistogramRender.shader" />
     <None Include="Assets\PostProcessing\Editor Resources\Monitors\ParadeRender.shader" />

@@ -2,42 +2,44 @@
 using System.Collections.Generic;
 using System.IO;
 using KBEngine;
-using SyncFrame;
 
-public class FixedPointStream : KBEngine.MemoryStream
+namespace SyncFrame
 {
-
-    public FP readFP()
+    public class FixedPointStream : KBEngine.MemoryStream
     {
-        return FP.FromRaw(readInt64());
-    }
 
-    public TSVector2 readTSVector2()
-    {
-        return new TSVector2(readFP(), readFP());
-    }
+        public FP readFP()
+        {
+            return FP.FromRaw(readInt64());
+        }
 
-    public TSVector readTSVector()
-    {
-        return new TSVector(readFP(), readFP(), readFP());
-    }
+        public TSVector2 readTSVector2()
+        {
+            return new TSVector2(readFP(), readFP());
+        }
+
+        public TSVector readTSVector()
+        {
+            return new TSVector(readFP(), readFP(), readFP());
+        }
 
 
-    public void writeFP(FP v)
-    {
-        writeInt64(v.RawValue);
-    }
+        public void writeFP(FP v)
+        {
+            writeInt64(v.RawValue);
+        }
 
-    public void writeTSVector2(TSVector2 v)
-    {
-        writeFP(v.x);
-        writeFP(v.y);
-    }
+        public void writeTSVector2(TSVector2 v)
+        {
+            writeFP(v.x);
+            writeFP(v.y);
+        }
 
-    public void writeTSVector(TSVector v)
-    {
-        writeFP(v.x);
-        writeFP(v.y);
-        writeFP(v.z);
+        public void writeTSVector(TSVector v)
+        {
+            writeFP(v.x);
+            writeFP(v.y);
+            writeFP(v.z);
+        }
     }
 }
